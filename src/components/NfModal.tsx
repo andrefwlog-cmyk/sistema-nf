@@ -19,6 +19,8 @@ const empty: NotaFiscalInsert = {
   data_emissao: '',
   data_impressao: null,
   responsavel: '',
+  status: 'aprovada',
+  comentario: null,
 };
 
 export default function NfModal({ nf, onClose, onSuccess }: Props) {
@@ -32,6 +34,8 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
           data_emissao: nf.data_emissao,
           data_impressao: nf.data_impressao ?? '',
           responsavel: nf.responsavel,
+          status: nf.status,
+          comentario: nf.comentario ?? '',
         }
       : empty
   );
@@ -53,6 +57,7 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
       valor: Number(form.valor),
       descricao: form.descricao || null,
       data_impressao: form.data_impressao || null,
+      comentario: form.status === 'pendente' ? (form.comentario || null) : null,
     };
 
     if (nf) {
@@ -149,7 +154,7 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Data de Impressão</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Data de Entrega</label>
               <input
                 type="date"
                 value={form.data_impressao ?? ''}
@@ -168,6 +173,48 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Status *</label>
+            <div className="flex gap-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="status"
+                  value="aprovada"
+                  checked={form.status === 'aprovada'}
+                  onChange={() => set('status', 'aprovada')}
+                  className="accent-green-600"
+                />
+                <span className="text-sm text-gray-700">Aprovada</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="status"
+                  value="pendente"
+                  checked={form.status === 'pendente'}
+                  onChange={() => set('status', 'pendente')}
+                  className="accent-amber-500"
+                />
+                <span className="text-sm text-gray-700">Pendente</span>
+              </label>
+            </div>
+          </div>
+
+          {form.status === 'pendente' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Comentário *</label>
+              <textarea
+                required
+                rows={3}
+                value={form.comentario ?? ''}
+                onChange={(e) => set('comentario', e.target.value)}
+                placeholder="Informe o motivo da pendência..."
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+              />
+            </div>
+          )}
 
           {error && (
             <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</p>

@@ -7,6 +7,8 @@ export interface NotaFiscal {
   data_emissao: string;
   data_impressao: string | null;
   responsavel: string;
+  status: 'aprovada' | 'pendente';
+  comentario: string | null;
   created_at: string;
   user_id: string;
 }

@@ -57,8 +57,9 @@ export default function NfTable({ nfs }: Props) {
                 <th className="px-4 py-3 font-medium">Valor</th>
                 <th className="px-4 py-3 font-medium">Descrição</th>
                 <th className="px-4 py-3 font-medium">Dt. Emissão</th>
-                <th className="px-4 py-3 font-medium">Dt. Impressão</th>
+                <th className="px-4 py-3 font-medium">Dt. Entrega</th>
                 <th className="px-4 py-3 font-medium">Responsável</th>
+                <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium text-center">Ações</th>
               </tr>
             </thead>
@@ -72,6 +73,20 @@ export default function NfTable({ nfs }: Props) {
                   <td className="px-4 py-3 text-gray-700">{formatDate(nf.data_emissao)}</td>
                   <td className="px-4 py-3 text-gray-700">{formatDate(nf.data_impressao)}</td>
                   <td className="px-4 py-3 text-gray-700">{nf.responsavel}</td>
+                  <td className="px-4 py-3">
+                    {nf.status === 'aprovada' ? (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                        Aprovada
+                      </span>
+                    ) : (
+                      <span
+                        className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 cursor-default"
+                        title={nf.comentario ?? ''}
+                      >
+                        Pendente
+                      </span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2 justify-center">
                       <button
