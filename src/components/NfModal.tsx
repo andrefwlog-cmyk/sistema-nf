@@ -57,7 +57,7 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
       valor: Number(form.valor),
       descricao: form.descricao || null,
       data_impressao: form.data_impressao || null,
-      comentario: form.status === 'pendente' ? (form.comentario || null) : null,
+      comentario: (form.status === 'pendente' || form.status === 'cancelada') ? (form.comentario || null) : null,
     };
 
     if (nf) {
@@ -199,10 +199,21 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
                 />
                 <span className="text-sm text-gray-700">Pendente</span>
               </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="status"
+                  value="cancelada"
+                  checked={form.status === 'cancelada'}
+                  onChange={() => set('status', 'cancelada')}
+                  className="accent-red-500"
+                />
+                <span className="text-sm text-gray-700">Cancelada</span>
+              </label>
             </div>
           </div>
 
-          {form.status === 'pendente' && (
+          {(form.status === 'pendente' || form.status === 'cancelada') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Comentário *</label>
               <textarea

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, Search, X } from 'lucide-react';
 import type { NotaFiscal } from '@/lib/types';
 import NfModal from './NfModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
@@ -10,6 +10,8 @@ import DeleteConfirmModal from './DeleteConfirmModal';
 interface Props {
   nfs: NotaFiscal[];
 }
+
+type StatusFilter = 'all' | 'aprovada' | 'pendente' | 'cancelada';
 
 function formatDate(dateStr: string | null) {
   if (!dateStr) return '—';
@@ -21,15 +23,73 @@ function formatCurrency(value: number) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
+const STATUS_LABELS: Record<StatusFilter, string> = {
+  all: 'Todos',
+  aprovada: 'Aprovada',
+  pendente: 'Pendente',
+  cancelada: 'Cancelada',
+};
+
+function StatusBadge({ status, comentario }: { status: NotaFiscal['status']; comentario: string | null }) {
+  if (status === 'aprovada') {
+    return (
+      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+        Aprovada
+      </span>
+    );
+  }
+  if (status === 'cancelada') {
+    return (
+      <span
+        className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 cursor-default"
+        title={comentario ?? ''}
+      >
+        Cancelada
+      </span>
+    );
+  }
+  return (
+    <span
+      className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 cursor-default"
+      title={comentario ?? ''}
+    >
+      Pendente
+    </span>
+  );
+}
+
 export default function NfTable({ nfs }: Props) {
   const router = useRouter();
   const [editNf, setEditNf] = useState<NotaFiscal | null>(null);
   const [deleteNf, setDeleteNf] = useState<NotaFiscal | null>(null);
   const [showNew, setShowNew] = useState(false);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
   function refresh() {
     router.refresh();
   }
+
+  const filtered = nfs.filter((nf) => {
+    if (search) {
+      const term = search.toLowerCase();
+      const matchesSearch =
+        nf.numero.toLowerCase().includes(term) ||
+        nf.emissor.toLowerCase().includes(term) ||
+        String(nf.valor).includes(term) ||
+        formatCurrency(nf.valor).toLowerCase().includes(term);
+      if (!matchesSearch) return false;
+    }
+    if (statusFilter !== 'all' && nf.status !== statusFilter) return false;
+    return true;
+  });
+
+  const counts: Record<StatusFilter, number> = {
+    all: nfs.length,
+    aprovada: nfs.filter((n) => n.status === 'aprovada').length,
+    pendente: nfs.filter((n) => n.status === 'pendente').length,
+    cancelada: nfs.filter((n) => n.status === 'cancelada').length,
+  };
 
   return (
     <>
@@ -43,9 +103,46 @@ export default function NfTable({ nfs }: Props) {
         </button>
       </div>
 
-      {nfs.length === 0 ? (
+      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Buscar por número, emissor ou valor..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9 pr-8 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+
+        <div className="flex gap-1.5 flex-wrap">
+          {(Object.keys(STATUS_LABELS) as StatusFilter[]).map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              className={`px-3 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap ${
+                statusFilter === s
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              {STATUS_LABELS[s]} ({counts[s]})
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {filtered.length === 0 ? (
         <div className="text-center py-16 text-gray-400 text-sm">
-          Nenhuma nota fiscal cadastrada.
+          {nfs.length === 0 ? 'Nenhuma nota fiscal cadastrada.' : 'Nenhum resultado encontrado.'}
         </div>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-gray-200">
@@ -64,7 +161,7 @@ export default function NfTable({ nfs }: Props) {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {nfs.map((nf) => (
+              {filtered.map((nf) => (
                 <tr key={nf.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 font-medium text-gray-900">{nf.numero}</td>
                   <td className="px-4 py-3 text-gray-700">{nf.emissor}</td>
@@ -74,18 +171,7 @@ export default function NfTable({ nfs }: Props) {
                   <td className="px-4 py-3 text-gray-700">{formatDate(nf.data_impressao)}</td>
                   <td className="px-4 py-3 text-gray-700">{nf.responsavel}</td>
                   <td className="px-4 py-3">
-                    {nf.status === 'aprovada' ? (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
-                        Aprovada
-                      </span>
-                    ) : (
-                      <span
-                        className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 cursor-default"
-                        title={nf.comentario ?? ''}
-                      >
-                        Pendente
-                      </span>
-                    )}
+                    <StatusBadge status={nf.status} comentario={nf.comentario} />
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2 justify-center">
