@@ -17,37 +17,24 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
   return (
     <aside
       className="w-56 shrink-0 flex flex-col min-h-screen sticky top-0"
-      style={{
-        background: '#06081A',
-        borderRight: '1px solid rgba(100,140,200,0.1)',
-      }}
+      style={{ background: '#111E35', borderRight: '1px solid rgba(0,0,0,0.15)' }}
     >
-      {/* Logo */}
       <div
         className="px-5 py-5"
-        style={{ borderBottom: '1px solid rgba(100,140,200,0.08)' }}
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}
       >
-        <Image
-          src="/logo.png"
-          alt="FWLOG"
-          width={105}
-          height={34}
-          className="object-contain"
-          priority
-        />
+        <Image src="/logo.png" alt="FWLOG" width={105} height={34} className="object-contain" priority />
       </div>
 
-      {/* Section label */}
       <div className="px-5 pt-6 pb-2">
         <span
           className="text-[10px] tracking-[0.18em] uppercase font-semibold"
-          style={{ color: '#243448', fontFamily: 'var(--font-barlow-condensed)' }}
+          style={{ color: '#2D4060', fontFamily: 'var(--font-barlow-condensed)' }}
         >
           Módulos
         </span>
       </div>
 
-      {/* Navigation */}
       <nav className="flex-1 px-3 space-y-0.5">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname.startsWith(href);
@@ -57,8 +44,8 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
               href={href}
               className="flex items-center gap-3 px-3 py-2.5 rounded-lg relative transition-all"
               style={{
-                color: active ? '#D4932E' : '#4E6A88',
-                background: active ? 'rgba(212,147,46,0.07)' : 'transparent',
+                color: active ? '#D4932E' : '#6A8AAA',
+                background: active ? 'rgba(212,147,46,0.1)' : 'transparent',
                 fontFamily: 'var(--font-barlow-condensed)',
                 fontSize: '13.5px',
                 fontWeight: active ? 600 : 500,
@@ -78,15 +65,11 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
         })}
       </nav>
 
-      {/* Bottom */}
       <div
         className="px-4 py-4"
-        style={{ borderTop: '1px solid rgba(100,140,200,0.08)' }}
+        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
       >
-        <p
-          className="text-[11px] mb-3 truncate"
-          style={{ color: '#243448' }}
-        >
+        <p className="text-[11px] mb-3 truncate" style={{ color: '#2D4060' }}>
           {userEmail}
         </p>
         <LogoutButton />

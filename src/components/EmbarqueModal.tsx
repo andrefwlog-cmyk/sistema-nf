@@ -32,7 +32,7 @@ const labelStyle = {
   fontWeight: 600,
   letterSpacing: '0.1em',
   textTransform: 'uppercase' as const,
-  color: '#3D5878',
+  color: '#5A7A96',
 };
 
 export default function EmbarqueModal({ onClose, onSuccess }: Props) {
@@ -57,44 +57,35 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
       user_id: user!.id,
     });
 
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-      return;
-    }
+    if (error) { setError(error.message); setLoading(false); return; }
 
     onSuccess();
     onClose();
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
+    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(17,30,53,0.5)', backdropFilter: 'blur(2px)' }}>
       <div
         className="w-full max-w-lg rounded-2xl"
-        style={{
-          background: '#0B1020',
-          border: '1px solid rgba(100,140,200,0.14)',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.7)',
-        }}
+        style={{ background: '#FFFFFF', border: '1px solid #E2EAF2', boxShadow: '0 24px 60px rgba(0,0,0,0.15)' }}
       >
-        {/* Header */}
         <div
           className="flex items-center justify-between px-6 py-4"
-          style={{ borderBottom: '1px solid rgba(100,140,200,0.1)' }}
+          style={{ borderBottom: '1px solid #EEF3F8' }}
         >
           <h2
-            className="uppercase tracking-wider"
+            className="uppercase"
             style={{
               fontFamily: 'var(--font-barlow-condensed)',
               fontSize: '17px',
               fontWeight: 700,
-              letterSpacing: '0.08em',
-              color: '#C4D4E8',
+              letterSpacing: '0.07em',
+              color: '#1E2D3D',
             }}
           >
             Novo Embarque
           </h2>
-          <button onClick={onClose} style={{ color: '#3D5878' }} className="hover:text-white transition-colors">
+          <button onClick={onClose} className="transition-colors" style={{ color: '#A0B4C8' }}>
             <X size={18} />
           </button>
         </div>
@@ -102,12 +93,7 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div>
             <label style={labelStyle}>Navio + Viagem *</label>
-            <input
-              required
-              value={form.navio_viagem}
-              onChange={(e) => set('navio_viagem', e.target.value)}
-              className="inp"
-            />
+            <input required value={form.navio_viagem} onChange={(e) => set('navio_viagem', e.target.value)} className="inp" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -131,19 +117,11 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
 
           <div>
             <label style={labelStyle}>ETB</label>
-            <input
-              type="date"
-              value={form.etb ?? ''}
-              onChange={(e) => set('etb', e.target.value)}
-              className="inp"
-            />
+            <input type="date" value={form.etb ?? ''} onChange={(e) => set('etb', e.target.value)} className="inp" />
           </div>
 
           {error && (
-            <p
-              className="text-sm rounded-lg px-3 py-2"
-              style={{ color: '#F87171', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
-            >
+            <p className="text-sm rounded-lg px-3 py-2" style={{ color: '#B91C1C', background: '#FEF2F2', border: '1px solid #FECACA' }}>
               {error}
             </p>
           )}
@@ -152,19 +130,20 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
             <button
               type="button" onClick={onClose}
               className="px-4 py-2 rounded-lg text-sm transition-all"
-              style={{ color: '#4E6A88', border: '1px solid rgba(100,140,200,0.15)', background: 'transparent' }}
+              style={{ color: '#7A95B0', border: '1px solid #D0DAE8', background: '#fff' }}
             >
               Cancelar
             </button>
             <button
               type="submit" disabled={loading}
-              className="px-5 py-2 rounded-lg text-sm font-semibold uppercase tracking-wider transition-all"
+              className="px-5 py-2 rounded-lg font-semibold uppercase transition-all"
               style={{
-                background: loading ? '#7A5010' : '#D4932E',
-                color: '#07091A',
+                background: loading ? '#B87820' : '#D4932E',
+                color: '#fff',
                 fontFamily: 'var(--font-barlow-condensed)',
-                letterSpacing: '0.06em',
-                opacity: loading ? 0.7 : 1,
+                fontSize: '12.5px',
+                letterSpacing: '0.07em',
+                opacity: loading ? 0.75 : 1,
               }}
             >
               {loading ? 'Salvando...' : 'Salvar'}

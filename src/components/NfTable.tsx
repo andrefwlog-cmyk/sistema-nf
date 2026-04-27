@@ -30,41 +30,34 @@ const STATUS_LABELS: Record<StatusFilter, string> = {
   cancelada: 'Cancelada',
 };
 
-const STATUS_DOT: Record<NotaFiscal['status'], string> = {
-  aprovada: '#22C55E',
-  pendente: '#F59E0B',
-  cancelada: '#EF4444',
-};
-
-const STATUS_LABEL_COLOR: Record<NotaFiscal['status'], string> = {
-  aprovada: '#22C55E',
-  pendente: '#F59E0B',
-  cancelada: '#EF4444',
+const STATUS_CONFIG: Record<NotaFiscal['status'], { dot: string; text: string; bg: string; border: string }> = {
+  aprovada: { dot: '#16A34A', text: '#15803D', bg: '#F0FDF4', border: '#BBF7D0' },
+  pendente:  { dot: '#D97706', text: '#B45309', bg: '#FFFBEB', border: '#FDE68A' },
+  cancelada: { dot: '#DC2626', text: '#B91C1C', bg: '#FEF2F2', border: '#FECACA' },
 };
 
 function StatusBadge({ status, comentario }: { status: NotaFiscal['status']; comentario: string | null }) {
+  const cfg = STATUS_CONFIG[status];
   return (
     <span
-      className="inline-flex items-center gap-1.5"
+      className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium"
+      style={{ background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.text }}
       title={status !== 'aprovada' ? (comentario ?? '') : undefined}
     >
-      <span
-        className="rounded-full shrink-0"
-        style={{ width: '6px', height: '6px', background: STATUS_DOT[status] }}
-      />
-      <span
-        className="text-xs font-medium"
-        style={{
-          color: STATUS_LABEL_COLOR[status],
-          fontFamily: 'var(--font-barlow-condensed)',
-          letterSpacing: '0.04em',
-        }}
-      >
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </span>
+      <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: cfg.dot }} />
+      {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
   );
 }
+
+const thStyle = {
+  fontFamily: 'var(--font-barlow-condensed)',
+  fontSize: '11px',
+  fontWeight: 600,
+  letterSpacing: '0.1em',
+  color: '#7A95B0',
+  textTransform: 'uppercase' as const,
+};
 
 export default function NfTable({ nfs }: Props) {
   const router = useRouter();
@@ -97,56 +90,40 @@ export default function NfTable({ nfs }: Props) {
     cancelada: nfs.filter((n) => n.status === 'cancelada').length,
   };
 
-  const thStyle = {
-    fontFamily: 'var(--font-barlow-condensed)',
-    fontSize: '11px',
-    fontWeight: 600,
-    letterSpacing: '0.1em',
-    color: '#3D5878',
-    textTransform: 'uppercase' as const,
-  };
-
   return (
     <>
-      {/* Header */}
       <div className="flex items-center justify-between mb-5">
-        <div>
-          <h2
-            className="uppercase"
-            style={{
-              fontFamily: 'var(--font-barlow-condensed)',
-              fontSize: '22px',
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              color: '#C4D4E8',
-            }}
-          >
-            Notas Fiscais
-          </h2>
-        </div>
+        <h2
+          className="uppercase"
+          style={{
+            fontFamily: 'var(--font-barlow-condensed)',
+            fontSize: '22px',
+            fontWeight: 700,
+            letterSpacing: '0.06em',
+            color: '#1E2D3D',
+          }}
+        >
+          Notas Fiscais
+        </h2>
         <button
           onClick={() => setShowNew(true)}
-          className="px-4 py-2 rounded-lg text-sm font-semibold uppercase tracking-wider transition-all"
+          className="px-4 py-2 rounded-lg transition-all"
           style={{
             background: '#D4932E',
-            color: '#07091A',
+            color: '#FFFFFF',
             fontFamily: 'var(--font-barlow-condensed)',
-            fontSize: '12px',
-            letterSpacing: '0.08em',
+            fontSize: '12.5px',
+            fontWeight: 600,
+            letterSpacing: '0.06em',
           }}
         >
           + Nova NF
         </button>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="relative flex-1 max-w-sm">
-          <Search
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ color: '#2D4060' }}
-          />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#A0B4C8' }} />
           <input
             type="text"
             placeholder="Buscar por número, emissor ou valor..."
@@ -156,11 +133,7 @@ export default function NfTable({ nfs }: Props) {
             style={{ paddingLeft: '36px', paddingRight: search ? '32px' : '12px' }}
           />
           {search && (
-            <button
-              onClick={() => setSearch('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2"
-              style={{ color: '#2D4060' }}
-            >
+            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: '#A0B4C8' }}>
               <X size={13} />
             </button>
           )}
@@ -171,14 +144,14 @@ export default function NfTable({ nfs }: Props) {
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all"
+              className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
               style={{
                 fontFamily: 'var(--font-barlow-condensed)',
-                fontSize: '11px',
-                letterSpacing: '0.08em',
-                background: statusFilter === s ? '#D4932E' : 'rgba(100,140,200,0.06)',
-                color: statusFilter === s ? '#07091A' : '#3D5878',
-                border: statusFilter === s ? 'none' : '1px solid rgba(100,140,200,0.1)',
+                fontSize: '11.5px',
+                letterSpacing: '0.06em',
+                background: statusFilter === s ? '#111E35' : '#FFFFFF',
+                color: statusFilter === s ? '#D4932E' : '#7A95B0',
+                border: statusFilter === s ? 'none' : '1px solid #D0DAE8',
               }}
             >
               {STATUS_LABELS[s]} ({counts[s]})
@@ -187,22 +160,18 @@ export default function NfTable({ nfs }: Props) {
         </div>
       </div>
 
-      {/* Table */}
       {filtered.length === 0 ? (
-        <div
-          className="text-center py-20 text-sm"
-          style={{ color: '#243448' }}
-        >
+        <div className="text-center py-20 text-sm" style={{ color: '#A0B4C8' }}>
           {nfs.length === 0 ? 'Nenhuma nota fiscal cadastrada.' : 'Nenhum resultado encontrado.'}
         </div>
       ) : (
         <div
           className="overflow-x-auto rounded-xl"
-          style={{ border: '1px solid rgba(100,140,200,0.1)' }}
+          style={{ background: '#FFFFFF', border: '1px solid #E2EAF2', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}
         >
           <table className="w-full text-sm text-left" style={{ borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ background: '#0A1020', borderBottom: '1px solid rgba(100,140,200,0.1)' }}>
+              <tr style={{ background: '#F5F8FC', borderBottom: '1px solid #E2EAF2' }}>
                 <th className="px-4 py-3" style={thStyle}>Número</th>
                 <th className="px-4 py-3" style={thStyle}>Emissor</th>
                 <th className="px-4 py-3" style={thStyle}>Valor</th>
@@ -219,61 +188,51 @@ export default function NfTable({ nfs }: Props) {
                 <tr
                   key={nf.id}
                   style={{
-                    background: i % 2 === 0 ? '#07091A' : '#080B1C',
-                    borderBottom: '1px solid rgba(100,140,200,0.06)',
+                    borderBottom: i < filtered.length - 1 ? '1px solid #EEF3F8' : 'none',
                     transition: 'background 0.1s',
                   }}
-                  onMouseEnter={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = '#0D1528'; }}
-                  onMouseLeave={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? '#07091A' : '#080B1C'; }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = '#F8FAFD'; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = 'transparent'; }}
                 >
                   <td
                     className="px-4 py-3 font-semibold"
-                    style={{ color: '#C4D4E8', fontFamily: 'var(--font-jetbrains)', fontSize: '12.5px' }}
+                    style={{ color: '#1E2D3D', fontFamily: 'var(--font-jetbrains)', fontSize: '12.5px' }}
                   >
                     {nf.numero}
                   </td>
-                  <td className="px-4 py-3" style={{ color: '#8AA8C8' }}>{nf.emissor}</td>
+                  <td className="px-4 py-3" style={{ color: '#3A5068' }}>{nf.emissor}</td>
                   <td
                     className="px-4 py-3 font-medium"
-                    style={{ color: '#C4D4E8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
+                    style={{ color: '#1E2D3D', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
                   >
                     {formatCurrency(nf.valor)}
                   </td>
-                  <td
-                    className="px-4 py-3 max-w-[180px] truncate"
-                    style={{ color: '#4E6A88' }}
-                  >
+                  <td className="px-4 py-3 max-w-[180px] truncate" style={{ color: '#7A95B0' }}>
                     {nf.descricao || '—'}
                   </td>
-                  <td
-                    className="px-4 py-3"
-                    style={{ color: '#6A88A8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
-                  >
+                  <td className="px-4 py-3" style={{ color: '#5A7A96', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}>
                     {formatDate(nf.data_emissao)}
                   </td>
-                  <td
-                    className="px-4 py-3"
-                    style={{ color: '#6A88A8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
-                  >
+                  <td className="px-4 py-3" style={{ color: '#5A7A96', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}>
                     {formatDate(nf.data_impressao)}
                   </td>
-                  <td className="px-4 py-3" style={{ color: '#7A98C0' }}>{nf.responsavel}</td>
+                  <td className="px-4 py-3" style={{ color: '#4E6A85' }}>{nf.responsavel}</td>
                   <td className="px-4 py-3">
                     <StatusBadge status={nf.status} comentario={nf.comentario} />
                   </td>
                   <td className="px-4 py-3">
-                    <div className="flex gap-2 justify-center">
+                    <div className="flex gap-1.5 justify-center">
                       <button
                         onClick={() => setEditNf(nf)}
-                        className="p-1.5 rounded transition-all"
-                        style={{ color: '#3D5878' }}
+                        className="p-1.5 rounded-lg transition-all"
+                        style={{ color: '#94AABF' }}
                         title="Editar"
                         onMouseEnter={(e) => {
                           (e.currentTarget as HTMLButtonElement).style.color = '#D4932E';
-                          (e.currentTarget as HTMLButtonElement).style.background = 'rgba(212,147,46,0.1)';
+                          (e.currentTarget as HTMLButtonElement).style.background = '#FFF7EC';
                         }}
                         onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.color = '#3D5878';
+                          (e.currentTarget as HTMLButtonElement).style.color = '#94AABF';
                           (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
                         }}
                       >
@@ -281,15 +240,15 @@ export default function NfTable({ nfs }: Props) {
                       </button>
                       <button
                         onClick={() => setDeleteNf(nf)}
-                        className="p-1.5 rounded transition-all"
-                        style={{ color: '#3D5878' }}
+                        className="p-1.5 rounded-lg transition-all"
+                        style={{ color: '#94AABF' }}
                         title="Excluir"
                         onMouseEnter={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.color = '#EF4444';
-                          (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.08)';
+                          (e.currentTarget as HTMLButtonElement).style.color = '#DC2626';
+                          (e.currentTarget as HTMLButtonElement).style.background = '#FEF2F2';
                         }}
                         onMouseLeave={(e) => {
-                          (e.currentTarget as HTMLButtonElement).style.color = '#3D5878';
+                          (e.currentTarget as HTMLButtonElement).style.color = '#94AABF';
                           (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
                         }}
                       >

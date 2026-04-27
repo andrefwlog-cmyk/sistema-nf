@@ -33,7 +33,7 @@ const thStyle = {
   fontSize: '11px',
   fontWeight: 600,
   letterSpacing: '0.1em',
-  color: '#3D5878',
+  color: '#7A95B0',
   textTransform: 'uppercase' as const,
   whiteSpace: 'nowrap' as const,
 };
@@ -91,7 +91,6 @@ export default function EmbarqueTable({ embarques }: Props) {
 
   return (
     <>
-      {/* Header */}
       <div className="flex items-center justify-between mb-5">
         <h2
           className="uppercase"
@@ -99,8 +98,8 @@ export default function EmbarqueTable({ embarques }: Props) {
             fontFamily: 'var(--font-barlow-condensed)',
             fontSize: '22px',
             fontWeight: 700,
-            letterSpacing: '0.08em',
-            color: '#C4D4E8',
+            letterSpacing: '0.06em',
+            color: '#1E2D3D',
           }}
         >
           Controle de Embarque
@@ -110,21 +109,20 @@ export default function EmbarqueTable({ embarques }: Props) {
           className="px-4 py-2 rounded-lg transition-all"
           style={{
             background: '#D4932E',
-            color: '#07091A',
+            color: '#FFFFFF',
             fontFamily: 'var(--font-barlow-condensed)',
-            fontSize: '12px',
+            fontSize: '12.5px',
             fontWeight: 600,
-            letterSpacing: '0.08em',
+            letterSpacing: '0.06em',
           }}
         >
           + Novo Embarque
         </button>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="relative flex-1 max-w-sm">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#2D4060' }} />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#A0B4C8' }} />
           <input
             type="text"
             placeholder="Buscar por navio, booking, POL, POD..."
@@ -134,7 +132,7 @@ export default function EmbarqueTable({ embarques }: Props) {
             style={{ paddingLeft: '36px', paddingRight: search ? '32px' : '12px' }}
           />
           {search && (
-            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: '#2D4060' }}>
+            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: '#A0B4C8' }}>
               <X size={13} />
             </button>
           )}
@@ -143,33 +141,29 @@ export default function EmbarqueTable({ embarques }: Props) {
         <div className="flex items-center gap-2">
           <label
             className="text-xs uppercase tracking-widest"
-            style={{ color: '#3D5878', fontFamily: 'var(--font-barlow-condensed)', fontSize: '11px', letterSpacing: '0.1em' }}
+            style={{ color: '#7A95B0', fontFamily: 'var(--font-barlow-condensed)', fontSize: '11px', letterSpacing: '0.1em' }}
           >
             POL
           </label>
-          <select
-            value={polFilter}
-            onChange={(e) => setPolFilter(e.target.value)}
-            className="sel"
-          >
+          <select value={polFilter} onChange={(e) => setPolFilter(e.target.value)} className="sel">
             <option value="">Todos</option>
-            {polOptions.map((pol) => (
-              <option key={pol} value={pol}>{pol}</option>
-            ))}
+            {polOptions.map((pol) => <option key={pol} value={pol}>{pol}</option>)}
           </select>
         </div>
       </div>
 
-      {/* Table */}
       {filtered.length === 0 ? (
-        <div className="text-center py-20 text-sm" style={{ color: '#243448' }}>
+        <div className="text-center py-20 text-sm" style={{ color: '#A0B4C8' }}>
           {embarques.length === 0 ? 'Nenhum embarque cadastrado.' : 'Nenhum resultado encontrado.'}
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl" style={{ border: '1px solid rgba(100,140,200,0.1)' }}>
+        <div
+          className="overflow-x-auto rounded-xl"
+          style={{ background: '#FFFFFF', border: '1px solid #E2EAF2', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}
+        >
           <table className="w-full text-sm text-left" style={{ borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ background: '#0A1020', borderBottom: '1px solid rgba(100,140,200,0.1)' }}>
+              <tr style={{ background: '#F5F8FC', borderBottom: '1px solid #E2EAF2' }}>
                 <th className="px-4 py-3" style={thStyle}>Navio + Viagem</th>
                 <th className="px-4 py-3" style={thStyle}>POL</th>
                 <th className="px-4 py-3" style={thStyle}>POD</th>
@@ -189,42 +183,26 @@ export default function EmbarqueTable({ embarques }: Props) {
                 <tr
                   key={e.id}
                   style={{
-                    background: i % 2 === 0 ? '#07091A' : '#080B1C',
-                    borderBottom: '1px solid rgba(100,140,200,0.06)',
+                    borderBottom: i < filtered.length - 1 ? '1px solid #EEF3F8' : 'none',
                     transition: 'background 0.1s',
                   }}
-                  onMouseEnter={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = '#0D1528'; }}
-                  onMouseLeave={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? '#07091A' : '#080B1C'; }}
+                  onMouseEnter={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = '#F8FAFD'; }}
+                  onMouseLeave={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = 'transparent'; }}
                 >
-                  <td
-                    className="px-4 py-3 font-semibold whitespace-nowrap"
-                    style={{ color: '#C4D4E8' }}
-                  >
+                  <td className="px-4 py-3 font-semibold whitespace-nowrap" style={{ color: '#1E2D3D' }}>
                     {e.navio_viagem}
                   </td>
-                  <td
-                    className="px-4 py-3 font-semibold"
-                    style={{ color: '#D4932E', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
-                  >
+                  <td className="px-4 py-3 font-semibold" style={{ color: '#C4821A', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}>
                     {e.pol}
                   </td>
-                  <td
-                    className="px-4 py-3"
-                    style={{ color: '#8AA8C8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
-                  >
+                  <td className="px-4 py-3" style={{ color: '#3A5068', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}>
                     {e.pod}
                   </td>
-                  <td className="px-4 py-3" style={{ color: '#7A98C0' }}>{e.volume}</td>
-                  <td
-                    className="px-4 py-3"
-                    style={{ color: '#9AB8D8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
-                  >
+                  <td className="px-4 py-3" style={{ color: '#4E6A85' }}>{e.volume}</td>
+                  <td className="px-4 py-3" style={{ color: '#3A5068', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}>
                     {e.booking}
                   </td>
-                  <td
-                    className="px-4 py-3 whitespace-nowrap"
-                    style={{ color: '#6A88A8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
-                  >
+                  <td className="px-4 py-3 whitespace-nowrap" style={{ color: '#5A7A96', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}>
                     {formatDate(e.etb)}
                   </td>
 
@@ -233,12 +211,13 @@ export default function EmbarqueTable({ embarques }: Props) {
                       <button
                         onClick={() => toggleCheck(e.id, field, e[field])}
                         disabled={loadingKey === e.id + field}
-                        className="w-6 h-6 rounded flex items-center justify-center mx-auto transition-all"
+                        className="w-6 h-6 rounded-md flex items-center justify-center mx-auto transition-all"
                         style={{
-                          background: e[field] ? '#22C55E' : 'transparent',
-                          border: e[field] ? 'none' : '1.5px solid rgba(100,140,200,0.25)',
+                          background: e[field] ? '#16A34A' : '#fff',
+                          border: e[field] ? 'none' : '1.5px solid #CBD5E1',
                           color: e[field] ? '#fff' : 'transparent',
                           opacity: loadingKey === e.id + field ? 0.5 : 1,
+                          boxShadow: e[field] ? '0 1px 3px rgba(22,163,74,0.3)' : 'none',
                         }}
                       >
                         <Check size={12} strokeWidth={2.5} />
@@ -253,9 +232,7 @@ export default function EmbarqueTable({ embarques }: Props) {
                       disabled={loadingKey === e.id + 'status_adr'}
                       className="sel"
                     >
-                      {ADR_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                      ))}
+                      {ADR_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                     </select>
                   </td>
 
@@ -266,9 +243,7 @@ export default function EmbarqueTable({ embarques }: Props) {
                       disabled={loadingKey === e.id + 'status_embarque'}
                       className="sel"
                     >
-                      {EMBARQUE_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>{o.label}</option>
-                      ))}
+                      {EMBARQUE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
                     </select>
                   </td>
 
@@ -276,15 +251,15 @@ export default function EmbarqueTable({ embarques }: Props) {
                     <div className="flex justify-center">
                       <button
                         onClick={() => setDeleteId(e.id)}
-                        className="p-1.5 rounded transition-all"
-                        style={{ color: '#3D5878' }}
+                        className="p-1.5 rounded-lg transition-all"
+                        style={{ color: '#94AABF' }}
                         title="Excluir"
                         onMouseEnter={(ev) => {
-                          (ev.currentTarget as HTMLButtonElement).style.color = '#EF4444';
-                          (ev.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.08)';
+                          (ev.currentTarget as HTMLButtonElement).style.color = '#DC2626';
+                          (ev.currentTarget as HTMLButtonElement).style.background = '#FEF2F2';
                         }}
                         onMouseLeave={(ev) => {
-                          (ev.currentTarget as HTMLButtonElement).style.color = '#3D5878';
+                          (ev.currentTarget as HTMLButtonElement).style.color = '#94AABF';
                           (ev.currentTarget as HTMLButtonElement).style.background = 'transparent';
                         }}
                       >
@@ -302,47 +277,32 @@ export default function EmbarqueTable({ embarques }: Props) {
       {showNew && <EmbarqueModal onClose={() => setShowNew(false)} onSuccess={refresh} />}
 
       {deleteId && (
-        <div className="fixed inset-0 flex items-center justify-center z-50" style={{ background: 'rgba(0,0,0,0.75)' }}>
+        <div className="fixed inset-0 flex items-center justify-center z-50" style={{ background: 'rgba(17,30,53,0.5)', backdropFilter: 'blur(2px)' }}>
           <div
             className="w-full max-w-sm mx-4 rounded-2xl p-6"
-            style={{
-              background: '#0B1020',
-              border: '1px solid rgba(239,68,68,0.2)',
-              boxShadow: '0 32px 80px rgba(0,0,0,0.7)',
-            }}
+            style={{ background: '#FFFFFF', border: '1px solid #FECACA', boxShadow: '0 24px 60px rgba(0,0,0,0.15)' }}
           >
             <h2
               className="mb-2 uppercase"
-              style={{
-                fontFamily: 'var(--font-barlow-condensed)',
-                fontSize: '17px',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                color: '#EF4444',
-              }}
+              style={{ fontFamily: 'var(--font-barlow-condensed)', fontSize: '17px', fontWeight: 700, letterSpacing: '0.07em', color: '#B91C1C' }}
             >
               Excluir Embarque
             </h2>
-            <p className="text-sm mb-5" style={{ color: '#5E7A9A' }}>
+            <p className="text-sm mb-5" style={{ color: '#5A7A96' }}>
               Tem certeza que deseja excluir este embarque? Esta ação não pode ser desfeita.
             </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setDeleteId(null)}
                 className="px-4 py-2 rounded-lg text-sm transition-all"
-                style={{ color: '#4E6A88', border: '1px solid rgba(100,140,200,0.15)' }}
+                style={{ color: '#7A95B0', border: '1px solid #D0DAE8', background: '#fff' }}
               >
                 Cancelar
               </button>
               <button
                 onClick={() => handleDelete(deleteId)}
-                className="px-5 py-2 rounded-lg text-sm font-semibold uppercase tracking-wider transition-all"
-                style={{
-                  background: '#EF4444',
-                  color: '#fff',
-                  fontFamily: 'var(--font-barlow-condensed)',
-                  letterSpacing: '0.06em',
-                }}
+                className="px-5 py-2 rounded-lg text-sm font-semibold uppercase transition-all"
+                style={{ background: '#DC2626', color: '#fff', fontFamily: 'var(--font-barlow-condensed)', letterSpacing: '0.06em' }}
               >
                 Excluir
               </button>

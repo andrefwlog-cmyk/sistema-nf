@@ -31,63 +31,83 @@ export default function LoginPage() {
   }
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden"
-      style={{ background: '#07091A' }}
-    >
-      {/* Grid texture */}
+    <div className="min-h-screen flex" style={{ background: '#EFF3F8' }}>
+      {/* Left panel — dark navy branding */}
       <div
-        className="fixed inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(80,120,200,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(80,120,200,0.04) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }}
-      />
-      {/* Top glow */}
-      <div
-        className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse, rgba(15, 35, 90, 0.6) 0%, transparent 70%)',
-        }}
-      />
-
-      <div className="relative w-full max-w-[360px]">
-        {/* Logo */}
-        <div className="mb-10 flex justify-center">
-          <Image src="/logo.png" alt="FWLOG" width={130} height={42} className="object-contain" priority />
-        </div>
-
-        {/* Card */}
-        <div
-          className="rounded-2xl p-8"
-          style={{
-            background: '#0B1020',
-            border: '1px solid rgba(100,140,200,0.14)',
-            boxShadow: '0 32px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(100,140,200,0.06)',
-          }}
-        >
-          <h1
-            className="mb-1 uppercase"
+        className="hidden lg:flex flex-col justify-between w-[420px] shrink-0 p-10"
+        style={{ background: '#111E35' }}
+      >
+        <Image src="/logo.png" alt="FWLOG" width={120} height={40} className="object-contain" priority />
+        <div>
+          <p
+            className="uppercase mb-3"
             style={{
               fontFamily: 'var(--font-barlow-condensed)',
-              fontSize: '22px',
+              fontSize: '13px',
+              fontWeight: 600,
+              letterSpacing: '0.18em',
+              color: '#D4932E',
+            }}
+          >
+            Sistema de Gestão
+          </p>
+          <h1
+            className="leading-tight"
+            style={{
+              fontFamily: 'var(--font-barlow-condensed)',
+              fontSize: '38px',
               fontWeight: 700,
-              letterSpacing: '0.1em',
+              letterSpacing: '0.04em',
               color: '#C4D4E8',
             }}
           >
-            Acesso ao Sistema
+            Gestão<br />Operacional<br />FWLOG
           </h1>
-          <p className="mb-7 text-sm" style={{ color: '#344A68' }}>
-            Gestão Operacional · FWLOG
+        </div>
+        <p
+          className="text-xs"
+          style={{ color: '#2D4060', fontFamily: 'var(--font-jetbrains)' }}
+        >
+          © {new Date().getFullYear()} FWLOG
+        </p>
+      </div>
+
+      {/* Right panel — form */}
+      <div className="flex-1 flex items-center justify-center p-8">
+        <div className="w-full max-w-[360px]">
+          {/* Logo on mobile */}
+          <div className="mb-8 flex lg:hidden">
+            <Image src="/logo.png" alt="FWLOG" width={110} height={36} className="object-contain" />
+          </div>
+
+          <h2
+            className="mb-1 uppercase"
+            style={{
+              fontFamily: 'var(--font-barlow-condensed)',
+              fontSize: '24px',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              color: '#1E2D3D',
+            }}
+          >
+            Acesso ao Sistema
+          </h2>
+          <p className="mb-8 text-sm" style={{ color: '#7A95B0' }}>
+            Informe suas credenciais para entrar
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
-                className="block mb-1.5 uppercase text-[11px] tracking-widest font-semibold"
-                style={{ color: '#3D5878', fontFamily: 'var(--font-barlow-condensed)' }}
+                className="block mb-1.5"
+                style={{
+                  fontFamily: 'var(--font-barlow-condensed)',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  color: '#5A7A96',
+                }}
               >
                 E-mail
               </label>
@@ -102,8 +122,15 @@ export default function LoginPage() {
 
             <div>
               <label
-                className="block mb-1.5 uppercase text-[11px] tracking-widest font-semibold"
-                style={{ color: '#3D5878', fontFamily: 'var(--font-barlow-condensed)' }}
+                className="block mb-1.5"
+                style={{
+                  fontFamily: 'var(--font-barlow-condensed)',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  letterSpacing: '0.12em',
+                  textTransform: 'uppercase',
+                  color: '#5A7A96',
+                }}
               >
                 Senha
               </label>
@@ -120,9 +147,9 @@ export default function LoginPage() {
               <p
                 className="text-sm rounded-lg px-3 py-2.5"
                 style={{
-                  color: '#F87171',
-                  background: 'rgba(239,68,68,0.08)',
-                  border: '1px solid rgba(239,68,68,0.2)',
+                  color: '#B91C1C',
+                  background: '#FEF2F2',
+                  border: '1px solid #FECACA',
                 }}
               >
                 {error}
@@ -132,13 +159,13 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-lg py-3 text-sm font-bold uppercase tracking-widest transition-all mt-2"
+              className="w-full rounded-lg py-3 mt-2 font-semibold uppercase tracking-wider transition-all"
               style={{
-                background: loading ? '#7A5010' : '#D4932E',
-                color: '#07091A',
+                background: loading ? '#B87820' : '#D4932E',
+                color: '#FFFFFF',
                 fontFamily: 'var(--font-barlow-condensed)',
                 fontSize: '13px',
-                letterSpacing: '0.12em',
+                letterSpacing: '0.1em',
                 cursor: loading ? 'not-allowed' : 'pointer',
               }}
             >
@@ -146,10 +173,6 @@ export default function LoginPage() {
             </button>
           </form>
         </div>
-
-        <p className="text-center mt-6 text-xs" style={{ color: '#1E2E44' }}>
-          FWLOG · Sistema de Gestão
-        </p>
       </div>
     </div>
   );

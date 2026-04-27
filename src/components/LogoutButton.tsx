@@ -17,7 +17,7 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm w-full transition-all"
+      className="flex items-center gap-2 px-3 py-2 rounded-lg w-full transition-all"
       style={{
         color: '#3D5878',
         fontFamily: 'var(--font-barlow-condensed)',
@@ -26,8 +26,8 @@ export default function LogoutButton() {
         letterSpacing: '0.02em',
       }}
       onMouseEnter={(e) => {
-        (e.currentTarget as HTMLButtonElement).style.color = '#EF4444';
-        (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.07)';
+        (e.currentTarget as HTMLButtonElement).style.color = '#F87171';
+        (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.1)';
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLButtonElement).style.color = '#3D5878';
