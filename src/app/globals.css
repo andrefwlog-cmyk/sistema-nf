@@ -1,26 +1,59 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-barlow), 'Barlow', sans-serif;
+  --font-display: var(--font-barlow-condensed), 'Barlow Condensed', sans-serif;
+  --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: #07091A;
+  color: #C4D4E8;
+  font-family: var(--font-barlow), 'Barlow', sans-serif;
 }
+
+/* Dark inputs */
+.inp {
+  width: 100%;
+  background: #05070F;
+  border: 1px solid rgba(100, 140, 200, 0.2);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: 13.5px;
+  color: #C4D4E8;
+  font-family: var(--font-barlow), 'Barlow', sans-serif;
+  transition: border-color 0.15s;
+  outline: none;
+}
+.inp:focus {
+  border-color: rgba(212, 147, 46, 0.55);
+}
+.inp::placeholder {
+  color: #2D4060;
+}
+
+/* Dark selects */
+.sel {
+  background: #05070F;
+  border: 1px solid rgba(100, 140, 200, 0.18);
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 12px;
+  color: #8AA8C8;
+  font-family: var(--font-barlow), 'Barlow', sans-serif;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.sel:focus {
+  border-color: rgba(212, 147, 46, 0.45);
+}
+.sel:disabled {
+  opacity: 0.5;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(100,140,200,0.18); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(100,140,200,0.32); }

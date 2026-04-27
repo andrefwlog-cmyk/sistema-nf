@@ -17,10 +17,25 @@ export default function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+      className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm w-full transition-all"
+      style={{
+        color: '#3D5878',
+        fontFamily: 'var(--font-barlow-condensed)',
+        fontSize: '13px',
+        fontWeight: 500,
+        letterSpacing: '0.02em',
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.color = '#EF4444';
+        (e.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.07)';
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLButtonElement).style.color = '#3D5878';
+        (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+      }}
     >
-      <LogOut size={16} />
-      Sair
+      <LogOut size={14} strokeWidth={1.8} />
+      Sair do Sistema
     </button>
   );
 }

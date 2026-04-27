@@ -28,6 +28,16 @@ function formatDate(dateStr: string | null) {
   return `${day}/${month}/${year}`;
 }
 
+const thStyle = {
+  fontFamily: 'var(--font-barlow-condensed)',
+  fontSize: '11px',
+  fontWeight: 600,
+  letterSpacing: '0.1em',
+  color: '#3D5878',
+  textTransform: 'uppercase' as const,
+  whiteSpace: 'nowrap' as const,
+};
+
 export default function EmbarqueTable({ embarques }: Props) {
   const router = useRouter();
   const [showNew, setShowNew] = useState(false);
@@ -36,9 +46,7 @@ export default function EmbarqueTable({ embarques }: Props) {
   const [search, setSearch] = useState('');
   const [loadingKey, setLoadingKey] = useState<string | null>(null);
 
-  function refresh() {
-    router.refresh();
-  }
+  function refresh() { router.refresh(); }
 
   const polOptions = Array.from(new Set(embarques.map((e) => e.pol))).sort();
 
@@ -51,8 +59,7 @@ export default function EmbarqueTable({ embarques }: Props) {
         !e.booking.toLowerCase().includes(term) &&
         !e.pol.toLowerCase().includes(term) &&
         !e.pod.toLowerCase().includes(term)
-      )
-        return false;
+      ) return false;
     }
     return true;
   });
@@ -66,11 +73,7 @@ export default function EmbarqueTable({ embarques }: Props) {
     refresh();
   }
 
-  async function updateStatus(
-    id: string,
-    field: 'status_adr' | 'status_embarque',
-    value: string,
-  ) {
+  async function updateStatus(id: string, field: 'status_adr' | 'status_embarque', value: string) {
     const key = id + field;
     setLoadingKey(key);
     const supabase = createClient();
@@ -88,92 +91,140 @@ export default function EmbarqueTable({ embarques }: Props) {
 
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-800">Controle de Embarque</h2>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-5">
+        <h2
+          className="uppercase"
+          style={{
+            fontFamily: 'var(--font-barlow-condensed)',
+            fontSize: '22px',
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            color: '#C4D4E8',
+          }}
+        >
+          Controle de Embarque
+        </h2>
         <button
           onClick={() => setShowNew(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+          className="px-4 py-2 rounded-lg transition-all"
+          style={{
+            background: '#D4932E',
+            color: '#07091A',
+            fontFamily: 'var(--font-barlow-condensed)',
+            fontSize: '12px',
+            fontWeight: 600,
+            letterSpacing: '0.08em',
+          }}
         >
           + Novo Embarque
         </button>
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="relative flex-1 max-w-sm">
-          <Search
-            size={15}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-          />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: '#2D4060' }} />
           <input
             type="text"
             placeholder="Buscar por navio, booking, POL, POD..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-8 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="inp"
+            style={{ paddingLeft: '36px', paddingRight: search ? '32px' : '12px' }}
           />
           {search && (
-            <button
-              onClick={() => setSearch('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              <X size={14} />
+            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: '#2D4060' }}>
+              <X size={13} />
             </button>
           )}
         </div>
 
         <div className="flex items-center gap-2">
-          <label className="text-sm text-gray-600 whitespace-nowrap">Filtrar por POL:</label>
+          <label
+            className="text-xs uppercase tracking-widest"
+            style={{ color: '#3D5878', fontFamily: 'var(--font-barlow-condensed)', fontSize: '11px', letterSpacing: '0.1em' }}
+          >
+            POL
+          </label>
           <select
             value={polFilter}
             onChange={(e) => setPolFilter(e.target.value)}
-            className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="sel"
           >
             <option value="">Todos</option>
             {polOptions.map((pol) => (
-              <option key={pol} value={pol}>
-                {pol}
-              </option>
+              <option key={pol} value={pol}>{pol}</option>
             ))}
           </select>
         </div>
       </div>
 
+      {/* Table */}
       {filtered.length === 0 ? (
-        <div className="text-center py-16 text-gray-400 text-sm">
-          {embarques.length === 0
-            ? 'Nenhum embarque cadastrado.'
-            : 'Nenhum resultado encontrado.'}
+        <div className="text-center py-20 text-sm" style={{ color: '#243448' }}>
+          {embarques.length === 0 ? 'Nenhum embarque cadastrado.' : 'Nenhum resultado encontrado.'}
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-gray-200">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
-              <tr>
-                <th className="px-4 py-3 font-medium whitespace-nowrap">Navio + Viagem</th>
-                <th className="px-4 py-3 font-medium">POL</th>
-                <th className="px-4 py-3 font-medium">POD</th>
-                <th className="px-4 py-3 font-medium">Volume</th>
-                <th className="px-4 py-3 font-medium">Booking</th>
-                <th className="px-4 py-3 font-medium">ETB</th>
-                <th className="px-4 py-3 font-medium text-center">Pedido</th>
-                <th className="px-4 py-3 font-medium text-center">Lista</th>
-                <th className="px-4 py-3 font-medium text-center">Manifesto</th>
-                <th className="px-4 py-3 font-medium">ADR</th>
-                <th className="px-4 py-3 font-medium">Embarque</th>
-                <th className="px-4 py-3 font-medium text-center">Ações</th>
+        <div className="overflow-x-auto rounded-xl" style={{ border: '1px solid rgba(100,140,200,0.1)' }}>
+          <table className="w-full text-sm text-left" style={{ borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ background: '#0A1020', borderBottom: '1px solid rgba(100,140,200,0.1)' }}>
+                <th className="px-4 py-3" style={thStyle}>Navio + Viagem</th>
+                <th className="px-4 py-3" style={thStyle}>POL</th>
+                <th className="px-4 py-3" style={thStyle}>POD</th>
+                <th className="px-4 py-3" style={thStyle}>Volume</th>
+                <th className="px-4 py-3" style={thStyle}>Booking</th>
+                <th className="px-4 py-3" style={thStyle}>ETB</th>
+                <th className="px-4 py-3 text-center" style={thStyle}>Pedido</th>
+                <th className="px-4 py-3 text-center" style={thStyle}>Lista</th>
+                <th className="px-4 py-3 text-center" style={thStyle}>Manifesto</th>
+                <th className="px-4 py-3" style={thStyle}>ADR</th>
+                <th className="px-4 py-3" style={thStyle}>Embarque</th>
+                <th className="px-4 py-3 text-center" style={thStyle}>Ações</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filtered.map((e) => (
-                <tr key={e.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
+            <tbody>
+              {filtered.map((e, i) => (
+                <tr
+                  key={e.id}
+                  style={{
+                    background: i % 2 === 0 ? '#07091A' : '#080B1C',
+                    borderBottom: '1px solid rgba(100,140,200,0.06)',
+                    transition: 'background 0.1s',
+                  }}
+                  onMouseEnter={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = '#0D1528'; }}
+                  onMouseLeave={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? '#07091A' : '#080B1C'; }}
+                >
+                  <td
+                    className="px-4 py-3 font-semibold whitespace-nowrap"
+                    style={{ color: '#C4D4E8' }}
+                  >
                     {e.navio_viagem}
                   </td>
-                  <td className="px-4 py-3 text-gray-700">{e.pol}</td>
-                  <td className="px-4 py-3 text-gray-700">{e.pod}</td>
-                  <td className="px-4 py-3 text-gray-700">{e.volume}</td>
-                  <td className="px-4 py-3 text-gray-700">{e.booking}</td>
-                  <td className="px-4 py-3 text-gray-700 whitespace-nowrap">
+                  <td
+                    className="px-4 py-3 font-semibold"
+                    style={{ color: '#D4932E', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
+                  >
+                    {e.pol}
+                  </td>
+                  <td
+                    className="px-4 py-3"
+                    style={{ color: '#8AA8C8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
+                  >
+                    {e.pod}
+                  </td>
+                  <td className="px-4 py-3" style={{ color: '#7A98C0' }}>{e.volume}</td>
+                  <td
+                    className="px-4 py-3"
+                    style={{ color: '#9AB8D8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
+                  >
+                    {e.booking}
+                  </td>
+                  <td
+                    className="px-4 py-3 whitespace-nowrap"
+                    style={{ color: '#6A88A8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}
+                  >
                     {formatDate(e.etb)}
                   </td>
 
@@ -182,13 +233,15 @@ export default function EmbarqueTable({ embarques }: Props) {
                       <button
                         onClick={() => toggleCheck(e.id, field, e[field])}
                         disabled={loadingKey === e.id + field}
-                        className={`w-7 h-7 rounded flex items-center justify-center mx-auto transition-colors ${
-                          e[field]
-                            ? 'bg-green-500 text-white hover:bg-green-600'
-                            : 'border-2 border-gray-300 text-transparent hover:border-gray-400'
-                        }`}
+                        className="w-6 h-6 rounded flex items-center justify-center mx-auto transition-all"
+                        style={{
+                          background: e[field] ? '#22C55E' : 'transparent',
+                          border: e[field] ? 'none' : '1.5px solid rgba(100,140,200,0.25)',
+                          color: e[field] ? '#fff' : 'transparent',
+                          opacity: loadingKey === e.id + field ? 0.5 : 1,
+                        }}
                       >
-                        <Check size={14} />
+                        <Check size={12} strokeWidth={2.5} />
                       </button>
                     </td>
                   ))}
@@ -198,12 +251,10 @@ export default function EmbarqueTable({ embarques }: Props) {
                       value={e.status_adr}
                       onChange={(ev) => updateStatus(e.id, 'status_adr', ev.target.value)}
                       disabled={loadingKey === e.id + 'status_adr'}
-                      className="border border-gray-300 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                      className="sel"
                     >
                       {ADR_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>
-                          {o.label}
-                        </option>
+                        <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
                   </td>
@@ -213,12 +264,10 @@ export default function EmbarqueTable({ embarques }: Props) {
                       value={e.status_embarque}
                       onChange={(ev) => updateStatus(e.id, 'status_embarque', ev.target.value)}
                       disabled={loadingKey === e.id + 'status_embarque'}
-                      className="border border-gray-300 rounded-lg px-2 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                      className="sel"
                     >
                       {EMBARQUE_OPTIONS.map((o) => (
-                        <option key={o.value} value={o.value}>
-                          {o.label}
-                        </option>
+                        <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
                   </td>
@@ -227,10 +276,19 @@ export default function EmbarqueTable({ embarques }: Props) {
                     <div className="flex justify-center">
                       <button
                         onClick={() => setDeleteId(e.id)}
-                        className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                        className="p-1.5 rounded transition-all"
+                        style={{ color: '#3D5878' }}
                         title="Excluir"
+                        onMouseEnter={(ev) => {
+                          (ev.currentTarget as HTMLButtonElement).style.color = '#EF4444';
+                          (ev.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.08)';
+                        }}
+                        onMouseLeave={(ev) => {
+                          (ev.currentTarget as HTMLButtonElement).style.color = '#3D5878';
+                          (ev.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                        }}
                       >
-                        <Trash2 size={15} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </td>
@@ -241,27 +299,50 @@ export default function EmbarqueTable({ embarques }: Props) {
         </div>
       )}
 
-      {showNew && (
-        <EmbarqueModal onClose={() => setShowNew(false)} onSuccess={refresh} />
-      )}
+      {showNew && <EmbarqueModal onClose={() => setShowNew(false)} onSuccess={refresh} />}
 
       {deleteId && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">Excluir Embarque</h2>
-            <p className="text-sm text-gray-600 mb-4">
+        <div className="fixed inset-0 flex items-center justify-center z-50" style={{ background: 'rgba(0,0,0,0.75)' }}>
+          <div
+            className="w-full max-w-sm mx-4 rounded-2xl p-6"
+            style={{
+              background: '#0B1020',
+              border: '1px solid rgba(239,68,68,0.2)',
+              boxShadow: '0 32px 80px rgba(0,0,0,0.7)',
+            }}
+          >
+            <h2
+              className="mb-2 uppercase"
+              style={{
+                fontFamily: 'var(--font-barlow-condensed)',
+                fontSize: '17px',
+                fontWeight: 700,
+                letterSpacing: '0.08em',
+                color: '#EF4444',
+              }}
+            >
+              Excluir Embarque
+            </h2>
+            <p className="text-sm mb-5" style={{ color: '#5E7A9A' }}>
               Tem certeza que deseja excluir este embarque? Esta ação não pode ser desfeita.
             </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setDeleteId(null)}
-                className="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 rounded-lg text-sm transition-all"
+                style={{ color: '#4E6A88', border: '1px solid rgba(100,140,200,0.15)' }}
               >
                 Cancelar
               </button>
               <button
                 onClick={() => handleDelete(deleteId)}
-                className="px-4 py-2 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors"
+                className="px-5 py-2 rounded-lg text-sm font-semibold uppercase tracking-wider transition-all"
+                style={{
+                  background: '#EF4444',
+                  color: '#fff',
+                  fontFamily: 'var(--font-barlow-condensed)',
+                  letterSpacing: '0.06em',
+                }}
               >
                 Excluir
               </button>

@@ -23,6 +23,17 @@ const empty: NotaFiscalInsert = {
   comentario: null,
 };
 
+const labelStyle = {
+  display: 'block',
+  marginBottom: '6px',
+  fontSize: '11px',
+  fontFamily: 'var(--font-barlow-condensed)',
+  fontWeight: 600,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase' as const,
+  color: '#3D5878',
+};
+
 export default function NfModal({ nf, onClose, onSuccess }: Props) {
   const [form, setForm] = useState<NotaFiscalInsert>(
     nf
@@ -61,188 +72,166 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
     };
 
     if (nf) {
-      const { error } = await supabase
-        .from('notas_fiscais')
-        .update(payload)
-        .eq('id', nf.id);
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-        return;
-      }
+      const { error } = await supabase.from('notas_fiscais').update(payload).eq('id', nf.id);
+      if (error) { setError(error.message); setLoading(false); return; }
     } else {
       const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await supabase
-        .from('notas_fiscais')
-        .insert({ ...payload, user_id: user!.id });
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-        return;
-      }
+      const { error } = await supabase.from('notas_fiscais').insert({ ...payload, user_id: user!.id });
+      if (error) { setError(error.message); setLoading(false); return; }
     }
 
     onSuccess();
     onClose();
   }
 
+  const radioStatuses: { value: NotaFiscalInsert['status']; label: string; color: string }[] = [
+    { value: 'aprovada', label: 'Aprovada', color: '#22C55E' },
+    { value: 'pendente', label: 'Pendente', color: '#F59E0B' },
+    { value: 'cancelada', label: 'Cancelada', color: '#EF4444' },
+  ];
+
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-800">
+    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
+      <div
+        className="w-full max-w-lg rounded-2xl"
+        style={{
+          background: '#0B1020',
+          border: '1px solid rgba(100,140,200,0.14)',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.7)',
+        }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between px-6 py-4"
+          style={{ borderBottom: '1px solid rgba(100,140,200,0.1)' }}
+        >
+          <h2
+            className="uppercase tracking-wider"
+            style={{
+              fontFamily: 'var(--font-barlow-condensed)',
+              fontSize: '17px',
+              fontWeight: 700,
+              letterSpacing: '0.08em',
+              color: '#C4D4E8',
+            }}
+          >
             {nf ? 'Editar Nota Fiscal' : 'Nova Nota Fiscal'}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X size={20} />
+          <button onClick={onClose} style={{ color: '#3D5878' }} className="hover:text-white transition-colors">
+            <X size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Número *</label>
-              <input
-                required
-                value={form.numero}
-                onChange={(e) => set('numero', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <label style={labelStyle}>Número *</label>
+              <input required value={form.numero} onChange={(e) => set('numero', e.target.value)} className="inp" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Valor (R$) *</label>
+              <label style={labelStyle}>Valor (R$) *</label>
               <input
-                required
-                type="number"
-                step="0.01"
-                min="0"
+                required type="number" step="0.01" min="0"
                 value={form.valor}
                 onChange={(e) => set('valor', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="inp"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Emissor *</label>
-            <input
-              required
-              value={form.emissor}
-              onChange={(e) => set('emissor', e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <label style={labelStyle}>Emissor *</label>
+            <input required value={form.emissor} onChange={(e) => set('emissor', e.target.value)} className="inp" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
-            <input
-              value={form.descricao ?? ''}
-              onChange={(e) => set('descricao', e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <label style={labelStyle}>Descrição</label>
+            <input value={form.descricao ?? ''} onChange={(e) => set('descricao', e.target.value)} className="inp" />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Data de Emissão *</label>
-              <input
-                required
-                type="date"
-                value={form.data_emissao}
-                onChange={(e) => set('data_emissao', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <label style={labelStyle}>Data de Emissão *</label>
+              <input required type="date" value={form.data_emissao} onChange={(e) => set('data_emissao', e.target.value)} className="inp" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Data de Entrega</label>
-              <input
-                type="date"
-                value={form.data_impressao ?? ''}
-                onChange={(e) => set('data_impressao', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <label style={labelStyle}>Data de Entrega</label>
+              <input type="date" value={form.data_impressao ?? ''} onChange={(e) => set('data_impressao', e.target.value)} className="inp" />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Responsável *</label>
-            <input
-              required
-              value={form.responsavel}
-              onChange={(e) => set('responsavel', e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <label style={labelStyle}>Responsável *</label>
+            <input required value={form.responsavel} onChange={(e) => set('responsavel', e.target.value)} className="inp" />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status *</label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="status"
-                  value="aprovada"
-                  checked={form.status === 'aprovada'}
-                  onChange={() => set('status', 'aprovada')}
-                  className="accent-green-600"
-                />
-                <span className="text-sm text-gray-700">Aprovada</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="status"
-                  value="pendente"
-                  checked={form.status === 'pendente'}
-                  onChange={() => set('status', 'pendente')}
-                  className="accent-amber-500"
-                />
-                <span className="text-sm text-gray-700">Pendente</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="status"
-                  value="cancelada"
-                  checked={form.status === 'cancelada'}
-                  onChange={() => set('status', 'cancelada')}
-                  className="accent-red-500"
-                />
-                <span className="text-sm text-gray-700">Cancelada</span>
-              </label>
+            <label style={labelStyle}>Status *</label>
+            <div className="flex gap-4 mt-1">
+              {radioStatuses.map(({ value, label, color }) => (
+                <label key={value} className="flex items-center gap-2 cursor-pointer">
+                  <span
+                    className="w-4 h-4 rounded-full flex items-center justify-center transition-all"
+                    style={{
+                      border: `2px solid ${form.status === value ? color : 'rgba(100,140,200,0.25)'}`,
+                      background: form.status === value ? color : 'transparent',
+                    }}
+                    onClick={() => set('status', value)}
+                  >
+                    {form.status === value && (
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#07091A' }} />
+                    )}
+                  </span>
+                  <span className="text-sm cursor-pointer" style={{ color: form.status === value ? color : '#4E6A88' }} onClick={() => set('status', value)}>
+                    {label}
+                  </span>
+                </label>
+              ))}
             </div>
           </div>
 
           {(form.status === 'pendente' || form.status === 'cancelada') && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Comentário *</label>
+              <label style={labelStyle}>Comentário *</label>
               <textarea
                 required
                 rows={3}
                 value={form.comentario ?? ''}
                 onChange={(e) => set('comentario', e.target.value)}
-                placeholder="Informe o motivo da pendência..."
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+                placeholder="Informe o motivo..."
+                className="inp"
+                style={{ resize: 'none' }}
               />
             </div>
           )}
 
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2">{error}</p>
+            <p
+              className="text-sm rounded-lg px-3 py-2"
+              style={{ color: '#F87171', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
+            >
+              {error}
+            </p>
           )}
 
           <div className="flex gap-3 justify-end pt-2">
             <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              type="button" onClick={onClose}
+              className="px-4 py-2 rounded-lg text-sm transition-all"
+              style={{ color: '#4E6A88', border: '1px solid rgba(100,140,200,0.15)', background: 'transparent' }}
             >
               Cancelar
             </button>
             <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-60 transition-colors"
+              type="submit" disabled={loading}
+              className="px-5 py-2 rounded-lg text-sm font-semibold uppercase tracking-wider transition-all"
+              style={{
+                background: loading ? '#7A5010' : '#D4932E',
+                color: '#07091A',
+                fontFamily: 'var(--font-barlow-condensed)',
+                letterSpacing: '0.06em',
+                opacity: loading ? 0.7 : 1,
+              }}
             >
               {loading ? 'Salvando...' : 'Salvar'}
             </button>

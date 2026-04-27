@@ -28,29 +28,64 @@ export default function DeleteConfirmModal({ nf, onClose, onSuccess }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm mx-4">
-        <h2 className="text-lg font-semibold text-gray-800 mb-2">Excluir Nota Fiscal</h2>
-        <p className="text-sm text-gray-600 mb-4">
-          Tem certeza que deseja excluir a NF <span className="font-semibold">{nf.numero}</span>? Esta ação não pode ser desfeita.
+    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(0,0,0,0.75)' }}>
+      <div
+        className="w-full max-w-sm rounded-2xl p-6"
+        style={{
+          background: '#0B1020',
+          border: '1px solid rgba(239,68,68,0.2)',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.7)',
+        }}
+      >
+        <h2
+          className="mb-2 uppercase"
+          style={{
+            fontFamily: 'var(--font-barlow-condensed)',
+            fontSize: '17px',
+            fontWeight: 700,
+            letterSpacing: '0.08em',
+            color: '#EF4444',
+          }}
+        >
+          Excluir Nota Fiscal
+        </h2>
+        <p className="text-sm mb-5" style={{ color: '#5E7A9A' }}>
+          Tem certeza que deseja excluir a NF{' '}
+          <span style={{ color: '#C4D4E8', fontFamily: 'var(--font-jetbrains)', fontSize: '12px' }}>
+            {nf.numero}
+          </span>
+          ? Esta ação não pode ser desfeita.
         </p>
 
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded px-3 py-2 mb-4">{error}</p>
+          <p
+            className="text-sm rounded-lg px-3 py-2 mb-4"
+            style={{ color: '#F87171', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
+          >
+            {error}
+          </p>
         )}
 
         <div className="flex gap-3 justify-end">
           <button
             onClick={onClose}
             disabled={loading}
-            className="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 rounded-lg text-sm transition-all"
+            style={{ color: '#4E6A88', border: '1px solid rgba(100,140,200,0.15)' }}
           >
             Cancelar
           </button>
           <button
             onClick={handleDelete}
             disabled={loading}
-            className="px-4 py-2 text-sm text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-60 transition-colors"
+            className="px-5 py-2 rounded-lg text-sm font-semibold uppercase tracking-wider transition-all"
+            style={{
+              background: loading ? '#7A1A1A' : '#EF4444',
+              color: '#fff',
+              fontFamily: 'var(--font-barlow-condensed)',
+              letterSpacing: '0.06em',
+              opacity: loading ? 0.7 : 1,
+            }}
           >
             {loading ? 'Excluindo...' : 'Excluir'}
           </button>
