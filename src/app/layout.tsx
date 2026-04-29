@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Barlow, Barlow_Condensed, JetBrains_Mono } from "next/font/google";
+import { Barlow, Barlow_Condensed, JetBrains_Mono, Syne } from "next/font/google";
 import "./globals.css";
 
 const barlow = Barlow({
@@ -20,6 +20,12 @@ const jetbrains = JetBrains_Mono({
   weight: ["400", "500"],
 });
 
+const syne = Syne({
+  variable: "--font-syne",
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+});
+
 export const metadata: Metadata = {
   title: "FWLOG",
   description: "Sistema de gestão FWLOG",
@@ -33,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${barlow.variable} ${barlowCondensed.variable} ${jetbrains.variable} h-full`}
+      className={`${barlow.variable} ${barlowCondensed.variable} ${jetbrains.variable} ${syne.variable} h-full`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>

@@ -28,12 +28,12 @@ const empty: EmbarqueInsert = {
 const labelStyle = {
   display: 'block',
   marginBottom: '6px',
-  fontSize: '11px',
+  fontSize: '10.5px',
   fontFamily: 'var(--font-barlow-condensed)',
-  fontWeight: 600,
-  letterSpacing: '0.1em',
+  fontWeight: 700,
+  letterSpacing: '0.15em',
   textTransform: 'uppercase' as const,
-  color: '#5A7A96',
+  color: 'var(--tx-2)',
 };
 
 export default function EmbarqueModal({ onClose, onSuccess }: Props) {
@@ -65,29 +65,41 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(17,30,53,0.5)', backdropFilter: 'blur(2px)' }}>
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-fade-in"
+      style={{ background: 'rgba(3,7,18,0.82)', backdropFilter: 'blur(12px)' }}
+    >
       <div
-        className="w-full max-w-lg rounded-2xl"
-        style={{ background: '#FFFFFF', border: '1px solid #E2EAF2', boxShadow: '0 24px 60px rgba(0,0,0,0.15)' }}
+        className="w-full max-w-lg rounded-2xl animate-fade-up"
+        style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border-2)',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+        }}
       >
+        {/* Header */}
         <div
           className="flex items-center justify-between px-6 py-4"
-          style={{ borderBottom: '1px solid #EEF3F8' }}
+          style={{ borderBottom: '1px solid var(--border)' }}
         >
           <h2
-            className="uppercase"
             style={{
-              fontFamily: 'var(--font-barlow-condensed)',
-              fontSize: '17px',
+              fontFamily: 'var(--font-syne)',
+              fontSize: '16px',
               fontWeight: 700,
-              letterSpacing: '0.07em',
-              color: '#1E2D3D',
+              color: 'var(--tx)',
             }}
           >
             Novo Embarque
           </h2>
-          <button onClick={onClose} className="transition-colors" style={{ color: '#A0B4C8' }}>
-            <X size={18} />
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg transition-all duration-100"
+            style={{ color: 'var(--tx-2)' }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--tx)'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--tx-2)'; (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+          >
+            <X size={16} />
           </button>
         </div>
 
@@ -122,7 +134,10 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
           </div>
 
           {error && (
-            <p className="text-sm rounded-lg px-3 py-2" style={{ color: '#B91C1C', background: '#FEF2F2', border: '1px solid #FECACA' }}>
+            <p
+              className="text-sm rounded-lg px-3 py-2"
+              style={{ color: '#FCA5A5', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
+            >
               {error}
             </p>
           )}
@@ -130,21 +145,22 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
           <div className="flex gap-3 justify-end pt-2">
             <button
               type="button" onClick={onClose}
-              className="px-4 py-2 rounded-lg text-sm transition-all"
-              style={{ color: '#7A95B0', border: '1px solid #D0DAE8', background: '#fff' }}
+              className="px-4 py-2 rounded-lg text-sm transition-all duration-150"
+              style={{ color: 'var(--tx-2)', border: '1px solid var(--border-2)', background: 'rgba(255,255,255,0.04)' }}
             >
               Cancelar
             </button>
             <button
               type="submit" disabled={loading}
-              className="px-5 py-2 rounded-lg font-semibold uppercase transition-all"
+              className="px-5 py-2 rounded-lg font-bold uppercase transition-all duration-150"
               style={{
-                background: loading ? '#B87820' : '#D4932E',
-                color: '#fff',
+                background: loading ? 'rgba(232,160,48,0.6)' : 'var(--gold)',
+                color: '#060D1A',
                 fontFamily: 'var(--font-barlow-condensed)',
                 fontSize: '12.5px',
-                letterSpacing: '0.07em',
-                opacity: loading ? 0.75 : 1,
+                letterSpacing: '0.08em',
+                boxShadow: loading ? 'none' : '0 2px 12px rgba(232,160,48,0.25)',
+                cursor: loading ? 'not-allowed' : 'pointer',
               }}
             >
               {loading ? 'Salvando...' : 'Salvar'}

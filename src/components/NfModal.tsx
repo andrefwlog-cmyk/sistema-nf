@@ -26,13 +26,19 @@ const empty: NotaFiscalInsert = {
 const labelStyle = {
   display: 'block',
   marginBottom: '6px',
-  fontSize: '11px',
+  fontSize: '10.5px',
   fontFamily: 'var(--font-barlow-condensed)',
-  fontWeight: 600,
-  letterSpacing: '0.1em',
+  fontWeight: 700,
+  letterSpacing: '0.15em',
   textTransform: 'uppercase' as const,
-  color: '#5A7A96',
+  color: 'var(--tx-2)',
 };
+
+const radioStatuses: { value: NotaFiscalInsert['status']; label: string; color: string; glow: string }[] = [
+  { value: 'aprovada',  label: 'Aprovada',  color: '#22C55E', glow: 'rgba(34,197,94,0.25)' },
+  { value: 'pendente',  label: 'Pendente',  color: '#F59E0B', glow: 'rgba(245,158,11,0.25)' },
+  { value: 'cancelada', label: 'Cancelada', color: '#EF4444', glow: 'rgba(239,68,68,0.25)' },
+];
 
 export default function NfModal({ nf, onClose, onSuccess }: Props) {
   const [form, setForm] = useState<NotaFiscalInsert>(
@@ -84,36 +90,42 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
     onClose();
   }
 
-  const radioStatuses: { value: NotaFiscalInsert['status']; label: string; color: string }[] = [
-    { value: 'aprovada', label: 'Aprovada', color: '#16A34A' },
-    { value: 'pendente', label: 'Pendente', color: '#D97706' },
-    { value: 'cancelada', label: 'Cancelada', color: '#DC2626' },
-  ];
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 p-4" style={{ background: 'rgba(17,30,53,0.5)', backdropFilter: 'blur(2px)' }}>
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-fade-in"
+      style={{ background: 'rgba(3,7,18,0.82)', backdropFilter: 'blur(12px)' }}
+    >
       <div
-        className="w-full max-w-lg rounded-2xl"
-        style={{ background: '#FFFFFF', border: '1px solid #E2EAF2', boxShadow: '0 24px 60px rgba(0,0,0,0.15)' }}
+        className="w-full max-w-lg rounded-2xl animate-fade-up"
+        style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border-2)',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+        }}
       >
+        {/* Header */}
         <div
           className="flex items-center justify-between px-6 py-4"
-          style={{ borderBottom: '1px solid #EEF3F8' }}
+          style={{ borderBottom: '1px solid var(--border)' }}
         >
           <h2
-            className="uppercase"
             style={{
-              fontFamily: 'var(--font-barlow-condensed)',
-              fontSize: '17px',
+              fontFamily: 'var(--font-syne)',
+              fontSize: '16px',
               fontWeight: 700,
-              letterSpacing: '0.07em',
-              color: '#1E2D3D',
+              color: 'var(--tx)',
             }}
           >
             {nf ? 'Editar Nota Fiscal' : 'Nova Nota Fiscal'}
           </h2>
-          <button onClick={onClose} className="transition-colors" style={{ color: '#A0B4C8' }}>
-            <X size={18} />
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg transition-all duration-100"
+            style={{ color: 'var(--tx-2)' }}
+            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--tx)'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; }}
+            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--tx-2)'; (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+          >
+            <X size={16} />
           </button>
         </div>
 
@@ -155,23 +167,37 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
             <input required value={form.responsavel} onChange={(e) => set('responsavel', e.target.value)} className="inp" />
           </div>
 
+          {/* Status */}
           <div>
             <label style={labelStyle}>Status *</label>
-            <div className="flex gap-5 mt-1">
-              {radioStatuses.map(({ value, label, color }) => (
-                <label key={value} className="flex items-center gap-2 cursor-pointer" onClick={() => set('status', value)}>
-                  <span
-                    className="w-4 h-4 rounded-full flex items-center justify-center transition-all"
-                    style={{
-                      border: `2px solid ${form.status === value ? color : '#CBD5E1'}`,
-                      background: form.status === value ? color : '#fff',
-                    }}
+            <div className="flex gap-4 mt-2">
+              {radioStatuses.map(({ value, label, color, glow }) => {
+                const active = form.status === value;
+                return (
+                  <label
+                    key={value}
+                    className="flex items-center gap-2 cursor-pointer select-none"
+                    onClick={() => set('status', value)}
                   >
-                    {form.status === value && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
-                  </span>
-                  <span className="text-sm" style={{ color: form.status === value ? color : '#7A95B0' }}>{label}</span>
-                </label>
-              ))}
+                    <span
+                      className="w-4 h-4 rounded-full flex items-center justify-center transition-all duration-150 shrink-0"
+                      style={{
+                        border: `2px solid ${active ? color : 'rgba(255,255,255,0.15)'}`,
+                        background: active ? color : 'transparent',
+                        boxShadow: active ? `0 0 8px ${glow}` : 'none',
+                      }}
+                    >
+                      {active && <span className="w-1.5 h-1.5 rounded-full bg-white" />}
+                    </span>
+                    <span
+                      className="text-sm transition-colors duration-150"
+                      style={{ color: active ? color : 'var(--tx-2)', fontFamily: 'var(--font-barlow-condensed)', fontSize: '13px' }}
+                    >
+                      {label}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 
@@ -191,7 +217,10 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
           )}
 
           {error && (
-            <p className="text-sm rounded-lg px-3 py-2" style={{ color: '#B91C1C', background: '#FEF2F2', border: '1px solid #FECACA' }}>
+            <p
+              className="text-sm rounded-lg px-3 py-2"
+              style={{ color: '#FCA5A5', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
+            >
               {error}
             </p>
           )}
@@ -199,21 +228,22 @@ export default function NfModal({ nf, onClose, onSuccess }: Props) {
           <div className="flex gap-3 justify-end pt-2">
             <button
               type="button" onClick={onClose}
-              className="px-4 py-2 rounded-lg text-sm transition-all"
-              style={{ color: '#7A95B0', border: '1px solid #D0DAE8', background: '#fff' }}
+              className="px-4 py-2 rounded-lg text-sm transition-all duration-150"
+              style={{ color: 'var(--tx-2)', border: '1px solid var(--border-2)', background: 'rgba(255,255,255,0.04)' }}
             >
               Cancelar
             </button>
             <button
               type="submit" disabled={loading}
-              className="px-5 py-2 rounded-lg font-semibold uppercase transition-all"
+              className="px-5 py-2 rounded-lg font-bold uppercase transition-all duration-150"
               style={{
-                background: loading ? '#B87820' : '#D4932E',
-                color: '#fff',
+                background: loading ? 'rgba(232,160,48,0.6)' : 'var(--gold)',
+                color: '#060D1A',
                 fontFamily: 'var(--font-barlow-condensed)',
                 fontSize: '12.5px',
-                letterSpacing: '0.07em',
-                opacity: loading ? 0.75 : 1,
+                letterSpacing: '0.08em',
+                boxShadow: loading ? 'none' : '0 2px 12px rgba(232,160,48,0.25)',
+                cursor: loading ? 'not-allowed' : 'pointer',
               }}
             >
               {loading ? 'Salvando...' : 'Salvar'}
