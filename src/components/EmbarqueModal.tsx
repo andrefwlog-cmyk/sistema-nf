@@ -22,6 +22,7 @@ const empty: EmbarqueInsert = {
   manifesto: false,
   status_adr: 'em_andamento',
   status_embarque: 'em_andamento',
+  comentarios: null,
 };
 
 const labelStyle = {
