@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trash2, Check, Search, X } from 'lucide-react';
+import { Trash2, Check, Search, X, Pencil } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import type { Embarque } from '@/lib/types';
 import EmbarqueModal from './EmbarqueModal';
+import EmbarqueEditModal from './EmbarqueEditModal';
 
 interface Props {
   embarques: Embarque[];
@@ -42,6 +43,7 @@ export default function EmbarqueTable({ embarques }: Props) {
   const router = useRouter();
   const [showNew, setShowNew] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [editEmbarque, setEditEmbarque] = useState<Embarque | null>(null);
   const [polFilter, setPolFilter] = useState('');
   const [search, setSearch] = useState('');
   const [loadingKey, setLoadingKey] = useState<string | null>(null);
@@ -248,7 +250,23 @@ export default function EmbarqueTable({ embarques }: Props) {
                   </td>
 
                   <td className="px-4 py-3">
-                    <div className="flex justify-center">
+                    <div className="flex justify-center gap-1">
+                      <button
+                        onClick={() => setEditEmbarque(e)}
+                        className="p-1.5 rounded-lg transition-all"
+                        style={{ color: '#94AABF' }}
+                        title="Editar"
+                        onMouseEnter={(ev) => {
+                          (ev.currentTarget as HTMLButtonElement).style.color = '#D4932E';
+                          (ev.currentTarget as HTMLButtonElement).style.background = '#FEF9ED';
+                        }}
+                        onMouseLeave={(ev) => {
+                          (ev.currentTarget as HTMLButtonElement).style.color = '#94AABF';
+                          (ev.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                        }}
+                      >
+                        <Pencil size={14} />
+                      </button>
                       <button
                         onClick={() => setDeleteId(e.id)}
                         className="p-1.5 rounded-lg transition-all"
@@ -275,6 +293,13 @@ export default function EmbarqueTable({ embarques }: Props) {
       )}
 
       {showNew && <EmbarqueModal onClose={() => setShowNew(false)} onSuccess={refresh} />}
+      {editEmbarque && (
+        <EmbarqueEditModal
+          embarque={editEmbarque}
+          onClose={() => setEditEmbarque(null)}
+          onSuccess={refresh}
+        />
+      )}
 
       {deleteId && (
         <div className="fixed inset-0 flex items-center justify-center z-50" style={{ background: 'rgba(17,30,53,0.5)', backdropFilter: 'blur(2px)' }}>

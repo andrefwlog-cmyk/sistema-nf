@@ -28,6 +28,7 @@ export interface Embarque {
   manifesto: boolean;
   status_adr: 'em_andamento' | 'finalizado';
   status_embarque: 'em_andamento' | 'finalizado' | 'cancelado';
+  comentarios: string | null;
   created_at: string;
   user_id: string;
 }
