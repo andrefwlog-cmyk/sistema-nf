@@ -109,7 +109,7 @@ export default function EmbarqueTable({ embarques }: Props) {
         <h2
           style={{
             fontFamily: 'var(--font-syne)',
-            fontSize: '24px',
+            fontSize: '22px',
             fontWeight: 700,
             color: 'var(--tx)',
             letterSpacing: '-0.01em',
@@ -121,15 +121,14 @@ export default function EmbarqueTable({ embarques }: Props) {
           onClick={() => setShowNew(true)}
           className="px-4 py-2 rounded-lg transition-all duration-150 font-bold uppercase"
           style={{
-            background: 'var(--gold)',
-            color: '#060D1A',
+            background: 'var(--navy)',
+            color: '#FFFFFF',
             fontFamily: 'var(--font-barlow-condensed)',
             fontSize: '12px',
             letterSpacing: '0.08em',
-            boxShadow: '0 2px 12px rgba(232,160,48,0.22)',
           }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 20px rgba(232,160,48,0.38)'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 2px 12px rgba(232,160,48,0.22)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#1a2e4a'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--navy)'; }}
         >
           + Novo Embarque
         </button>
@@ -141,7 +140,7 @@ export default function EmbarqueTable({ embarques }: Props) {
           <Search
             size={14}
             className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ color: 'var(--tx-2)' }}
+            style={{ color: 'var(--tx-3)' }}
           />
           <input
             type="text"
@@ -152,7 +151,7 @@ export default function EmbarqueTable({ embarques }: Props) {
             style={{ paddingLeft: '36px', paddingRight: search ? '32px' : '12px' }}
           />
           {search && (
-            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--tx-2)' }}>
+            <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--tx-3)' }}>
               <X size={13} />
             </button>
           )}
@@ -188,13 +187,13 @@ export default function EmbarqueTable({ embarques }: Props) {
           className="overflow-x-auto rounded-xl animate-fade-up"
           style={{
             background: 'var(--surface)',
-            border: '1px solid var(--border)',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
+            border: '1px solid var(--border-2)',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
           }}
         >
           <table className="w-full text-sm text-left" style={{ borderCollapse: 'collapse' }}>
             <thead>
-              <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border)' }}>
+              <tr style={{ background: 'var(--surface-2)', borderBottom: '1px solid var(--border-2)' }}>
                 <th className="px-4 py-3" style={thStyle}>Navio + Viagem</th>
                 <th className="px-4 py-3" style={thStyle}>POL</th>
                 <th className="px-4 py-3" style={thStyle}>POD</th>
@@ -214,8 +213,8 @@ export default function EmbarqueTable({ embarques }: Props) {
                 <tr
                   key={e.id}
                   className="transition-all duration-100"
-                  style={{ borderBottom: i < filtered.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
-                  onMouseEnter={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = 'rgba(255,255,255,0.02)'; }}
+                  style={{ borderBottom: i < filtered.length - 1 ? '1px solid var(--border)' : 'none' }}
+                  onMouseEnter={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = 'var(--surface-2)'; }}
                   onMouseLeave={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = 'transparent'; }}
                 >
                   <td className="px-4 py-3 font-semibold whitespace-nowrap" style={{ color: 'var(--tx)' }}>
@@ -223,7 +222,7 @@ export default function EmbarqueTable({ embarques }: Props) {
                   </td>
                   <td
                     className="px-4 py-3 font-semibold"
-                    style={{ color: 'var(--gold)', fontFamily: 'var(--font-jetbrains)', fontSize: '11.5px' }}
+                    style={{ color: 'var(--navy)', fontFamily: 'var(--font-jetbrains)', fontSize: '11.5px' }}
                   >
                     {e.pol}
                   </td>
@@ -254,11 +253,10 @@ export default function EmbarqueTable({ embarques }: Props) {
                         disabled={loadingKey === e.id + field}
                         className="w-6 h-6 rounded-md flex items-center justify-center mx-auto transition-all duration-150"
                         style={{
-                          background: e[field] ? 'var(--green)' : 'rgba(255,255,255,0.05)',
-                          border: e[field] ? 'none' : '1.5px solid rgba(255,255,255,0.12)',
-                          color: e[field] ? '#060D1A' : 'transparent',
+                          background: e[field] ? 'var(--green)' : '#FFFFFF',
+                          border: e[field] ? 'none' : '1.5px solid var(--border-2)',
+                          color: e[field] ? '#FFFFFF' : 'transparent',
                           opacity: loadingKey === e.id + field ? 0.4 : 1,
-                          boxShadow: e[field] ? '0 0 8px rgba(34,197,94,0.4)' : 'none',
                         }}
                       >
                         <Check size={12} strokeWidth={2.5} />
@@ -295,14 +293,14 @@ export default function EmbarqueTable({ embarques }: Props) {
                       <button
                         onClick={() => setEditEmbarque(e)}
                         className="p-1.5 rounded-lg transition-all duration-100"
-                        style={{ color: 'var(--tx-2)' }}
+                        style={{ color: 'var(--tx-3)' }}
                         title="Editar"
                         onMouseEnter={(ev) => {
-                          (ev.currentTarget as HTMLButtonElement).style.color = 'var(--gold)';
-                          (ev.currentTarget as HTMLButtonElement).style.background = 'var(--gold-dim)';
+                          (ev.currentTarget as HTMLButtonElement).style.color = 'var(--sky)';
+                          (ev.currentTarget as HTMLButtonElement).style.background = 'rgba(37,99,235,0.08)';
                         }}
                         onMouseLeave={(ev) => {
-                          (ev.currentTarget as HTMLButtonElement).style.color = 'var(--tx-2)';
+                          (ev.currentTarget as HTMLButtonElement).style.color = 'var(--tx-3)';
                           (ev.currentTarget as HTMLButtonElement).style.background = 'transparent';
                         }}
                       >
@@ -311,14 +309,14 @@ export default function EmbarqueTable({ embarques }: Props) {
                       <button
                         onClick={() => setDeleteId(e.id)}
                         className="p-1.5 rounded-lg transition-all duration-100"
-                        style={{ color: 'var(--tx-2)' }}
+                        style={{ color: 'var(--tx-3)' }}
                         title="Excluir"
                         onMouseEnter={(ev) => {
-                          (ev.currentTarget as HTMLButtonElement).style.color = '#EF4444';
-                          (ev.currentTarget as HTMLButtonElement).style.background = 'rgba(239,68,68,0.08)';
+                          (ev.currentTarget as HTMLButtonElement).style.color = 'var(--red)';
+                          (ev.currentTarget as HTMLButtonElement).style.background = 'rgba(220,38,38,0.08)';
                         }}
                         onMouseLeave={(ev) => {
-                          (ev.currentTarget as HTMLButtonElement).style.color = 'var(--tx-2)';
+                          (ev.currentTarget as HTMLButtonElement).style.color = 'var(--tx-3)';
                           (ev.currentTarget as HTMLButtonElement).style.background = 'transparent';
                         }}
                       >
@@ -346,14 +344,14 @@ export default function EmbarqueTable({ embarques }: Props) {
       {deleteId && (
         <div
           className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-fade-in"
-          style={{ background: 'rgba(3,7,18,0.82)', backdropFilter: 'blur(12px)' }}
+          style={{ background: 'rgba(15,23,42,0.55)', backdropFilter: 'blur(8px)' }}
         >
           <div
             className="w-full max-w-sm rounded-2xl p-6 animate-fade-up"
             style={{
               background: 'var(--surface)',
-              border: '1px solid rgba(239,68,68,0.2)',
-              boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+              border: '1px solid rgba(220,38,38,0.2)',
+              boxShadow: '0 8px 40px rgba(0,0,0,0.18)',
             }}
           >
             <h2
@@ -362,7 +360,7 @@ export default function EmbarqueTable({ embarques }: Props) {
                 fontFamily: 'var(--font-syne)',
                 fontSize: '16px',
                 fontWeight: 700,
-                color: '#F87171',
+                color: 'var(--red)',
               }}
             >
               Excluir Embarque
@@ -377,7 +375,7 @@ export default function EmbarqueTable({ embarques }: Props) {
                 style={{
                   color: 'var(--tx-2)',
                   border: '1px solid var(--border-2)',
-                  background: 'rgba(255,255,255,0.04)',
+                  background: 'transparent',
                 }}
               >
                 Cancelar
@@ -386,11 +384,10 @@ export default function EmbarqueTable({ embarques }: Props) {
                 onClick={() => handleDelete(deleteId)}
                 className="px-5 py-2 rounded-lg text-sm font-bold uppercase transition-all duration-150"
                 style={{
-                  background: '#EF4444',
+                  background: 'var(--red)',
                   color: '#fff',
                   fontFamily: 'var(--font-barlow-condensed)',
                   letterSpacing: '0.08em',
-                  boxShadow: '0 2px 12px rgba(239,68,68,0.3)',
                 }}
               >
                 Excluir

@@ -67,14 +67,14 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-fade-in"
-      style={{ background: 'rgba(3,7,18,0.82)', backdropFilter: 'blur(12px)' }}
+      style={{ background: 'rgba(15,23,42,0.55)', backdropFilter: 'blur(8px)' }}
     >
       <div
         className="w-full max-w-lg rounded-2xl animate-fade-up"
         style={{
           background: 'var(--surface)',
           border: '1px solid var(--border-2)',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.18)',
         }}
       >
         {/* Header */}
@@ -95,9 +95,15 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg transition-all duration-100"
-            style={{ color: 'var(--tx-2)' }}
-            onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--tx)'; (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.06)'; }}
-            onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.color = 'var(--tx-2)'; (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+            style={{ color: 'var(--tx-3)' }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--tx)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'var(--surface-2)';
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLButtonElement).style.color = 'var(--tx-3)';
+              (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+            }}
           >
             <X size={16} />
           </button>
@@ -136,7 +142,7 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
           {error && (
             <p
               className="text-sm rounded-lg px-3 py-2"
-              style={{ color: '#FCA5A5', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}
+              style={{ color: 'var(--red)', background: 'rgba(220,38,38,0.06)', border: '1px solid rgba(220,38,38,0.18)' }}
             >
               {error}
             </p>
@@ -146,7 +152,7 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
             <button
               type="button" onClick={onClose}
               className="px-4 py-2 rounded-lg text-sm transition-all duration-150"
-              style={{ color: 'var(--tx-2)', border: '1px solid var(--border-2)', background: 'rgba(255,255,255,0.04)' }}
+              style={{ color: 'var(--tx-2)', border: '1px solid var(--border-2)', background: 'transparent' }}
             >
               Cancelar
             </button>
@@ -154,12 +160,11 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
               type="submit" disabled={loading}
               className="px-5 py-2 rounded-lg font-bold uppercase transition-all duration-150"
               style={{
-                background: loading ? 'rgba(232,160,48,0.6)' : 'var(--gold)',
-                color: '#060D1A',
+                background: loading ? 'rgba(10,22,40,0.6)' : 'var(--navy)',
+                color: '#FFFFFF',
                 fontFamily: 'var(--font-barlow-condensed)',
                 fontSize: '12.5px',
                 letterSpacing: '0.08em',
-                boxShadow: loading ? 'none' : '0 2px 12px rgba(232,160,48,0.25)',
                 cursor: loading ? 'not-allowed' : 'pointer',
               }}
             >

@@ -9,8 +9,8 @@ export default async function EmbarquesPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       <EmbarqueTable embarques={embarques ?? []} />
-    </main>
+    </div>
   );
 }

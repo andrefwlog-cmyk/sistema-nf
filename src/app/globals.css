@@ -7,61 +7,55 @@
 }
 
 :root {
-  --bg:        #060D1A;
-  --surface:   #0C1828;
-  --surface-2: #0F1F38;
-  --border:    rgba(255,255,255,0.06);
-  --border-2:  rgba(255,255,255,0.11);
-  --tx:        #C8DCF0;
-  --tx-2:      #3D5C7A;
-  --tx-3:      #1B2E45;
-  --gold:      #E8A030;
-  --gold-dim:  rgba(232,160,48,0.10);
-  --gold-glow: rgba(232,160,48,0.20);
-  --sky:       #38BDF8;
-  --green:     #22C55E;
-  --red:       #EF4444;
-  --amber:     #F59E0B;
+  --bg:        #EEF0F4;
+  --surface:   #FFFFFF;
+  --surface-2: #F8F9FB;
+  --border:    rgba(0,0,0,0.07);
+  --border-2:  rgba(0,0,0,0.12);
+  --tx:        #0F172A;
+  --tx-2:      #64748B;
+  --tx-3:      #94A3B8;
+  --navy:      #0A1628;
+  --navy-dim:  rgba(10,22,40,0.07);
+  --navy-mid:  rgba(10,22,40,0.14);
+  --sky:       #2563EB;
+  --green:     #16A34A;
+  --red:       #DC2626;
+  --amber:     #D97706;
 }
 
 body {
   background: var(--bg);
   color: var(--tx);
   font-family: var(--font-barlow), 'Barlow', sans-serif;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
-  background-size: 52px 52px;
-  background-attachment: fixed;
 }
 
 /* ── Inputs ─────────────────────────────────────── */
 .inp {
   width: 100%;
-  background: rgba(255,255,255,0.04);
+  background: #FFFFFF;
   border: 1px solid var(--border-2);
   border-radius: 8px;
   padding: 9px 12px;
   font-size: 13.5px;
   color: var(--tx);
   font-family: var(--font-barlow), 'Barlow', sans-serif;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s;
   outline: none;
 }
 .inp:focus {
-  border-color: var(--gold);
-  box-shadow: 0 0 0 3px var(--gold-dim);
-  background: rgba(255,255,255,0.06);
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px var(--navy-dim);
 }
-.inp::placeholder { color: var(--tx-2); }
+.inp::placeholder { color: var(--tx-3); }
 .inp[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.45) sepia(0.3) hue-rotate(180deg);
+  opacity: 0.5;
   cursor: pointer;
 }
 
 /* ── Selects ─────────────────────────────────────── */
 .sel {
-  background: rgba(255,255,255,0.04);
+  background: #FFFFFF;
   border: 1px solid var(--border-2);
   border-radius: 6px;
   padding: 5px 8px;
@@ -72,15 +66,15 @@ body {
   cursor: pointer;
   transition: border-color 0.15s;
 }
-.sel:focus   { border-color: var(--gold); }
+.sel:focus   { border-color: var(--navy); }
 .sel:disabled { opacity: 0.35; }
-.sel option  { background: #0C1828; color: var(--tx); }
+.sel option  { background: #FFFFFF; color: var(--tx); }
 
 /* ── Scrollbar ───────────────────────────────────── */
 ::-webkit-scrollbar           { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track     { background: transparent; }
-::-webkit-scrollbar-thumb     { background: rgba(255,255,255,0.10); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+::-webkit-scrollbar-thumb     { background: rgba(0,0,0,0.12); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.22); }
 
 /* ── Animations ──────────────────────────────────── */
 @keyframes fadeUp {

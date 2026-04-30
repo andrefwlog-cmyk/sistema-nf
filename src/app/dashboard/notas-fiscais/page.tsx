@@ -9,8 +9,8 @@ export default async function NotasFiscaisPage() {
     .order('created_at', { ascending: false });
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-6 py-8">
       <NfTable nfs={nfs ?? []} />
-    </main>
+    </div>
   );
 }
