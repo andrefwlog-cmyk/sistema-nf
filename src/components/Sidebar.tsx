@@ -61,26 +61,13 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
             style={{
               fontFamily: 'var(--font-barlow-condensed)',
               fontWeight: 700,
-              fontSize: '15px',
-              letterSpacing: '0.04em',
+              fontSize: '13px',
+              letterSpacing: '0.06em',
               color: '#FFFFFF',
               lineHeight: 1.1,
             }}
           >
-            FWLOG
-          </div>
-          <div
-            style={{
-              fontFamily: 'var(--font-barlow-condensed)',
-              fontSize: '9.5px',
-              letterSpacing: '0.14em',
-              color: 'var(--sidebar-tx)',
-              textTransform: 'uppercase',
-              lineHeight: 1.3,
-              opacity: 0.75,
-            }}
-          >
-            Soluções Logísticas
+            CONTROL SYSTEM
           </div>
         </div>
       </div>
