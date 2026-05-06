@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Trash2, Check, Search, X, Pencil } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
@@ -40,28 +40,32 @@ function formatDate(dateStr: string | null) {
   return `${day}/${month}/${year}`;
 }
 
-const thStyle = {
-  fontFamily: 'var(--font-barlow-condensed)',
-  fontSize: '10.5px',
-  fontWeight: 700,
-  letterSpacing: '0.16em',
-  color: 'var(--tx-2)',
-  textTransform: 'uppercase' as const,
-  whiteSpace: 'nowrap' as const,
-};
-
 export default function EmbarqueTable({ embarques }: Props) {
   const router = useRouter();
-  const [showNew, setShowNew] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [showNew, setShowNew]           = useState(false);
+  const [deleteId, setDeleteId]         = useState<string | null>(null);
   const [editEmbarque, setEditEmbarque] = useState<Embarque | null>(null);
-  const [polFilter, setPolFilter] = useState('');
-  const [search, setSearch] = useState('');
-  const [loadingKey, setLoadingKey] = useState<string | null>(null);
+  const [polFilter, setPolFilter]       = useState('');
+  const [search, setSearch]             = useState('');
+  const [loadingKey, setLoadingKey]     = useState<string | null>(null);
+  const [polColors, setPolColors]       = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('pol-colors');
+      if (stored) setPolColors(JSON.parse(stored));
+    } catch { /* ignore */ }
+  }, []);
 
   function refresh() { router.refresh(); }
 
   const polOptions = Array.from(new Set(embarques.map((e) => e.pol))).sort();
+
+  function setPolColor(pol: string, color: string) {
+    const next = { ...polColors, [pol]: color };
+    setPolColors(next);
+    localStorage.setItem('pol-colors', JSON.stringify(next));
+  }
 
   const filtered = embarques.filter((e) => {
     if (polFilter && e.pol !== polFilter) return false;
@@ -108,7 +112,7 @@ export default function EmbarqueTable({ embarques }: Props) {
       <div className="flex items-center justify-between mb-6">
         <h2
           style={{
-            fontFamily: 'var(--font-syne)',
+            fontFamily: 'var(--font-poppins)',
             fontSize: '22px',
             fontWeight: 700,
             color: 'var(--tx)',
@@ -123,7 +127,7 @@ export default function EmbarqueTable({ embarques }: Props) {
           style={{
             background: 'var(--blue)',
             color: '#FFFFFF',
-            fontFamily: 'var(--font-barlow-condensed)',
+            fontFamily: 'var(--font-poppins)',
             fontSize: '12px',
             letterSpacing: '0.08em',
           }}
@@ -135,7 +139,7 @@ export default function EmbarqueTable({ embarques }: Props) {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-5">
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="relative flex-1 max-w-sm">
           <Search
             size={14}
@@ -161,7 +165,7 @@ export default function EmbarqueTable({ embarques }: Props) {
           <label
             style={{
               color: 'var(--tx-2)',
-              fontFamily: 'var(--font-barlow-condensed)',
+              fontFamily: 'var(--font-poppins)',
               fontSize: '10.5px',
               fontWeight: 700,
               letterSpacing: '0.16em',
@@ -177,119 +181,38 @@ export default function EmbarqueTable({ embarques }: Props) {
         </div>
       </div>
 
-      {/* Table */}
+      {/* Cards */}
       {filtered.length === 0 ? (
         <div className="text-center py-24 text-sm" style={{ color: 'var(--tx-2)' }}>
           {embarques.length === 0 ? 'Nenhum embarque cadastrado.' : 'Nenhum resultado encontrado.'}
         </div>
       ) : (
-        <div
-          className="overflow-x-auto rounded-xl animate-fade-up"
-          style={{
-            background: 'var(--surface)',
-            border: '1px solid var(--border-2)',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-          }}
-        >
-          <table className="w-full text-sm text-left" style={{ borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ background: 'var(--surface-2)', borderBottom: '1px solid var(--border-2)' }}>
-                <th className="px-4 py-3" style={thStyle}>Navio + Viagem</th>
-                <th className="px-4 py-3" style={thStyle}>POL</th>
-                <th className="px-4 py-3" style={thStyle}>POD</th>
-                <th className="px-4 py-3" style={thStyle}>Volume</th>
-                <th className="px-4 py-3" style={thStyle}>Booking</th>
-                <th className="px-4 py-3" style={thStyle}>ETB</th>
-                <th className="px-4 py-3 text-center" style={thStyle}>Pedido</th>
-                <th className="px-4 py-3 text-center" style={thStyle}>Lista</th>
-                <th className="px-4 py-3 text-center" style={thStyle}>Manifesto</th>
-                <th className="px-4 py-3" style={thStyle}>ADR</th>
-                <th className="px-4 py-3" style={thStyle}>Embarque</th>
-                <th className="px-4 py-3 text-center" style={thStyle}>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((e, i) => (
-                <tr
-                  key={e.id}
-                  className="transition-all duration-100"
-                  style={{ borderBottom: i < filtered.length - 1 ? '1px solid var(--border)' : 'none' }}
-                  onMouseEnter={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = 'var(--surface-2)'; }}
-                  onMouseLeave={(ev) => { (ev.currentTarget as HTMLTableRowElement).style.background = 'transparent'; }}
-                >
-                  <td className="px-4 py-3 font-semibold whitespace-nowrap" style={{ color: 'var(--tx)' }}>
-                    {e.navio_viagem}
-                  </td>
-                  <td
-                    className="px-4 py-3 font-semibold"
-                    style={{ color: 'var(--navy)', fontFamily: 'var(--font-jetbrains)', fontSize: '11.5px' }}
-                  >
-                    {e.pol}
-                  </td>
-                  <td
-                    className="px-4 py-3"
-                    style={{ color: 'var(--sky)', fontFamily: 'var(--font-jetbrains)', fontSize: '11.5px' }}
-                  >
-                    {e.pod}
-                  </td>
-                  <td className="px-4 py-3" style={{ color: 'var(--tx)' }}>{e.volume}</td>
-                  <td
-                    className="px-4 py-3"
-                    style={{ color: 'var(--tx-2)', fontFamily: 'var(--font-jetbrains)', fontSize: '11.5px' }}
-                  >
-                    {e.booking}
-                  </td>
-                  <td
-                    className="px-4 py-3 whitespace-nowrap"
-                    style={{ color: 'var(--tx-2)', fontFamily: 'var(--font-jetbrains)', fontSize: '11.5px' }}
-                  >
-                    {formatDate(e.etb)}
-                  </td>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 animate-fade-up">
+          {filtered.map((e) => {
+            const accent = polColors[e.pol] || '#1D6FC4';
+            return (
+              <div
+                key={e.id}
+                className="rounded-xl flex flex-col overflow-hidden"
+                style={{
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border-2)',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                }}
+              >
+                {/* Colored accent bar */}
+                <div style={{ height: '4px', background: accent }} />
 
-                  {(['pedido', 'lista', 'manifesto'] as const).map((field) => (
-                    <td key={field} className="px-4 py-3 text-center">
-                      <button
-                        onClick={() => toggleCheck(e.id, field, e[field])}
-                        disabled={loadingKey === e.id + field}
-                        className="w-6 h-6 rounded-md flex items-center justify-center mx-auto transition-all duration-150"
-                        style={{
-                          background: e[field] ? 'var(--green)' : '#FFFFFF',
-                          border: e[field] ? 'none' : '1.5px solid var(--border-2)',
-                          color: e[field] ? '#FFFFFF' : 'transparent',
-                          opacity: loadingKey === e.id + field ? 0.4 : 1,
-                        }}
-                      >
-                        <Check size={12} strokeWidth={2.5} />
-                      </button>
-                    </td>
-                  ))}
-
-                  <td className="px-4 py-3">
-                    <select
-                      value={e.status_adr}
-                      onChange={(ev) => updateStatus(e.id, 'status_adr', ev.target.value)}
-                      disabled={loadingKey === e.id + 'status_adr'}
-                      className="sel"
-                      style={{ color: STATUS_ADR_COLOR[e.status_adr] }}
+                <div className="flex flex-col gap-3 p-4">
+                  {/* Title + actions */}
+                  <div className="flex items-start justify-between gap-2">
+                    <span
+                      className="font-semibold leading-tight"
+                      style={{ fontSize: '14px', color: 'var(--tx)' }}
                     >
-                      {ADR_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                    </select>
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <select
-                      value={e.status_embarque}
-                      onChange={(ev) => updateStatus(e.id, 'status_embarque', ev.target.value)}
-                      disabled={loadingKey === e.id + 'status_embarque'}
-                      className="sel"
-                      style={{ color: STATUS_EMBARQUE_COLOR[e.status_embarque] }}
-                    >
-                      {EMBARQUE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                    </select>
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <div className="flex justify-center gap-1">
+                      {e.navio_viagem}
+                    </span>
+                    <div className="flex gap-0.5 shrink-0">
                       <button
                         onClick={() => setEditEmbarque(e)}
                         className="p-1.5 rounded-lg transition-all duration-100"
@@ -304,7 +227,7 @@ export default function EmbarqueTable({ embarques }: Props) {
                           (ev.currentTarget as HTMLButtonElement).style.background = 'transparent';
                         }}
                       >
-                        <Pencil size={14} />
+                        <Pencil size={13} />
                       </button>
                       <button
                         onClick={() => setDeleteId(e.id)}
@@ -320,14 +243,128 @@ export default function EmbarqueTable({ embarques }: Props) {
                           (ev.currentTarget as HTMLButtonElement).style.background = 'transparent';
                         }}
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={13} />
                       </button>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+
+                  {/* POL → POD (dot clicável muda cor do POL) */}
+                  <div className="flex items-center gap-2" style={{ fontSize: '12px', fontFamily: 'var(--font-jetbrains)' }}>
+                    <label
+                      className="relative flex items-center gap-1.5 cursor-pointer"
+                      title="Clique para alterar a cor deste POL"
+                    >
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ background: accent, display: 'inline-block' }}
+                      />
+                      <span style={{ color: 'var(--tx)', fontWeight: 600 }}>{e.pol}</span>
+                      <input
+                        type="color"
+                        value={accent}
+                        onChange={(ev) => setPolColor(e.pol, ev.target.value)}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        style={{ width: '100%', height: '100%' }}
+                      />
+                    </label>
+                    <span style={{ color: 'var(--tx-3)' }}>→</span>
+                    <span style={{ color: 'var(--sky)' }}>{e.pod}</span>
+                  </div>
+
+                  {/* Booking + ETB */}
+                  <div
+                    className="flex items-center gap-2"
+                    style={{ fontSize: '11px', color: 'var(--tx-2)', fontFamily: 'var(--font-jetbrains)' }}
+                  >
+                    <span>{e.booking}</span>
+                    <span style={{ color: 'var(--border-2)' }}>·</span>
+                    <span>{formatDate(e.etb)}</span>
+                  </div>
+
+                  <div style={{ borderTop: '1px solid var(--border)' }} />
+
+                  {/* Checkboxes */}
+                  <div className="flex items-center gap-3">
+                    {(['pedido', 'lista', 'manifesto'] as const).map((field) => (
+                      <button
+                        key={field}
+                        onClick={() => toggleCheck(e.id, field, e[field])}
+                        disabled={loadingKey === e.id + field}
+                        className="flex items-center gap-1.5 transition-all duration-150"
+                        style={{
+                          fontSize: '10.5px',
+                          color: e[field] ? 'var(--green)' : 'var(--tx-3)',
+                          opacity: loadingKey === e.id + field ? 0.4 : 1,
+                        }}
+                      >
+                        <span
+                          className="w-4 h-4 rounded flex items-center justify-center shrink-0"
+                          style={{
+                            background: e[field] ? 'var(--green)' : '#FFFFFF',
+                            border: e[field] ? 'none' : '1.5px solid var(--border-2)',
+                            color: e[field] ? '#FFFFFF' : 'transparent',
+                          }}
+                        >
+                          <Check size={10} strokeWidth={2.5} />
+                        </span>
+                        <span className="capitalize">{field}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div style={{ borderTop: '1px solid var(--border)' }} />
+
+                  {/* Status selects */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        style={{
+                          fontSize: '9.5px',
+                          color: 'var(--tx-3)',
+                          fontWeight: 700,
+                          letterSpacing: '0.12em',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        ADR
+                      </span>
+                      <select
+                        value={e.status_adr}
+                        onChange={(ev) => updateStatus(e.id, 'status_adr', ev.target.value)}
+                        disabled={loadingKey === e.id + 'status_adr'}
+                        className="sel"
+                        style={{ color: STATUS_ADR_COLOR[e.status_adr] }}
+                      >
+                        {ADR_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                      </select>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span
+                        style={{
+                          fontSize: '9.5px',
+                          color: 'var(--tx-3)',
+                          fontWeight: 700,
+                          letterSpacing: '0.12em',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        Embarque
+                      </span>
+                      <select
+                        value={e.status_embarque}
+                        onChange={(ev) => updateStatus(e.id, 'status_embarque', ev.target.value)}
+                        disabled={loadingKey === e.id + 'status_embarque'}
+                        className="sel"
+                        style={{ color: STATUS_EMBARQUE_COLOR[e.status_embarque] }}
+                      >
+                        {EMBARQUE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -340,7 +377,7 @@ export default function EmbarqueTable({ embarques }: Props) {
         />
       )}
 
-      {/* Delete modal */}
+      {/* Delete confirm */}
       {deleteId && (
         <div
           className="fixed inset-0 flex items-center justify-center z-50 p-4 animate-fade-in"
@@ -356,12 +393,7 @@ export default function EmbarqueTable({ embarques }: Props) {
           >
             <h2
               className="mb-2 uppercase"
-              style={{
-                fontFamily: 'var(--font-syne)',
-                fontSize: '16px',
-                fontWeight: 700,
-                color: 'var(--red)',
-              }}
+              style={{ fontFamily: 'var(--font-poppins)', fontSize: '16px', fontWeight: 700, color: 'var(--red)' }}
             >
               Excluir Embarque
             </h2>
@@ -372,23 +404,14 @@ export default function EmbarqueTable({ embarques }: Props) {
               <button
                 onClick={() => setDeleteId(null)}
                 className="px-4 py-2 rounded-lg text-sm transition-all duration-150"
-                style={{
-                  color: 'var(--tx-2)',
-                  border: '1px solid var(--border-2)',
-                  background: 'transparent',
-                }}
+                style={{ color: 'var(--tx-2)', border: '1px solid var(--border-2)', background: 'transparent' }}
               >
                 Cancelar
               </button>
               <button
                 onClick={() => handleDelete(deleteId)}
                 className="px-5 py-2 rounded-lg text-sm font-bold uppercase transition-all duration-150"
-                style={{
-                  background: 'var(--red)',
-                  color: '#fff',
-                  fontFamily: 'var(--font-barlow-condensed)',
-                  letterSpacing: '0.08em',
-                }}
+                style={{ background: 'var(--red)', color: '#fff', fontFamily: 'var(--font-poppins)', letterSpacing: '0.08em' }}
               >
                 Excluir
               </button>

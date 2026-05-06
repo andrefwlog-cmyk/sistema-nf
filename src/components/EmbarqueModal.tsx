@@ -29,7 +29,7 @@ const labelStyle = {
   display: 'block',
   marginBottom: '6px',
   fontSize: '10.5px',
-  fontFamily: 'var(--font-barlow-condensed)',
+  fontFamily: 'var(--font-poppins)',
   fontWeight: 700,
   letterSpacing: '0.15em',
   textTransform: 'uppercase' as const,
@@ -84,7 +84,7 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
         >
           <h2
             style={{
-              fontFamily: 'var(--font-syne)',
+              fontFamily: 'var(--font-poppins)',
               fontSize: '16px',
               fontWeight: 700,
               color: 'var(--tx)',
@@ -162,7 +162,7 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
               style={{
                 background: loading ? 'rgba(29,111,196,0.55)' : 'var(--blue)',
                 color: '#FFFFFF',
-                fontFamily: 'var(--font-barlow-condensed)',
+                fontFamily: 'var(--font-poppins)',
                 fontSize: '12.5px',
                 letterSpacing: '0.08em',
                 cursor: loading ? 'not-allowed' : 'pointer',
