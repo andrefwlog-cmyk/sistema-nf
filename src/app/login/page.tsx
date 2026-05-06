@@ -44,7 +44,7 @@ export default function LoginPage() {
       >
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Image src="/logo.png" alt="Logo" width={44} height={44} className="object-contain" priority />
+          <Image src="/compass-logo.png" alt="Logo" width={44} height={44} className="object-contain" priority />
           <div>
             <div
               style={{
@@ -120,7 +120,7 @@ export default function LoginPage() {
           {/* Mobile logo */}
           <div className="flex lg:hidden justify-center mb-8">
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Image src="/logo.png" alt="Logo" width={40} height={40} className="object-contain" priority />
+              <Image src="/compass-logo.png" alt="Logo" width={40} height={40} className="object-contain" priority />
               <span
                 style={{
                   fontFamily: 'var(--font-barlow-condensed)',

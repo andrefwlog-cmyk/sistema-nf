@@ -49,10 +49,10 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
         }}
       >
         <Image
-          src="/logo.png"
+          src="/compass-logo.png"
           alt="Logo"
-          width={36}
-          height={36}
+          width={38}
+          height={38}
           className="object-contain shrink-0"
           priority
         />
