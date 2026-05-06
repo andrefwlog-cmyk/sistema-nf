@@ -44,6 +44,7 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
           padding: '20px 18px 16px',
           borderBottom: '1px solid var(--sidebar-border)',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           gap: '10px',
         }}
@@ -51,24 +52,22 @@ export default function Sidebar({ userEmail }: { userEmail: string }) {
         <Image
           src="/compass-logo.png"
           alt="Logo"
-          width={38}
-          height={38}
-          className="object-contain shrink-0"
+          width={120}
+          height={120}
+          className="object-contain"
           priority
         />
-        <div>
-          <div
-            style={{
-              fontFamily: 'var(--font-barlow-condensed)',
-              fontWeight: 700,
-              fontSize: '13px',
-              letterSpacing: '0.06em',
-              color: '#FFFFFF',
-              lineHeight: 1.1,
-            }}
-          >
-            CONTROL SYSTEM
-          </div>
+        <div
+          style={{
+            fontFamily: 'var(--font-barlow-condensed)',
+            fontWeight: 700,
+            fontSize: '13px',
+            letterSpacing: '0.1em',
+            color: '#FFFFFF',
+            textAlign: 'center',
+          }}
+        >
+          CONTROL SYSTEM
         </div>
       </div>
 
