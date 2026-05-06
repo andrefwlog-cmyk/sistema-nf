@@ -2,119 +2,220 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { FileText, Ship } from 'lucide-react';
-import LogoutButton from './LogoutButton';
+import { usePathname, useRouter } from 'next/navigation';
+import { FileText, Ship, LogOut, User } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
 const NAV_ITEMS = [
-  { href: '/dashboard/notas-fiscais', label: 'Notas Fiscais', icon: FileText },
+  { href: '/dashboard/notas-fiscais', label: 'Notas Fiscais',        icon: FileText },
   { href: '/dashboard/embarques',     label: 'Controle de Embarque', icon: Ship },
 ];
 
 export default function Sidebar({ userEmail }: { userEmail: string }) {
   const pathname = usePathname();
-  const initials = userEmail.slice(0, 2).toUpperCase();
+  const router = useRouter();
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push('/login');
+    router.refresh();
+  }
 
   return (
     <aside
-      className="w-56 shrink-0 flex flex-col min-h-screen sticky top-0"
       style={{
-        background: 'linear-gradient(180deg, #070E1E 0%, #060C19 100%)',
-        borderRight: '1px solid rgba(255,255,255,0.05)',
+        width: '220px',
+        minWidth: '220px',
+        minHeight: '100vh',
+        background: 'var(--sidebar)',
+        display: 'flex',
+        flexDirection: 'column',
+        borderRight: '1px solid var(--sidebar-border)',
+        position: 'sticky',
+        top: 0,
+        height: '100vh',
+        zIndex: 30,
       }}
     >
       {/* Logo */}
-      <div className="px-5 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <Image src="/logo.png" alt="FWLOG" width={105} height={34} className="object-contain" priority />
+      <div
+        style={{
+          padding: '20px 18px 16px',
+          borderBottom: '1px solid var(--sidebar-border)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+        }}
+      >
+        <Image
+          src="/logo.png"
+          alt="Logo"
+          width={36}
+          height={36}
+          className="object-contain shrink-0"
+          priority
+        />
+        <div>
+          <div
+            style={{
+              fontFamily: 'var(--font-barlow-condensed)',
+              fontWeight: 700,
+              fontSize: '15px',
+              letterSpacing: '0.04em',
+              color: '#FFFFFF',
+              lineHeight: 1.1,
+            }}
+          >
+            FWLOG
+          </div>
+          <div
+            style={{
+              fontFamily: 'var(--font-barlow-condensed)',
+              fontSize: '9.5px',
+              letterSpacing: '0.14em',
+              color: 'var(--sidebar-tx)',
+              textTransform: 'uppercase',
+              lineHeight: 1.3,
+              opacity: 0.75,
+            }}
+          >
+            Soluções Logísticas
+          </div>
+        </div>
       </div>
 
-      {/* Section label */}
-      <div className="px-5 pt-6 pb-2">
-        <span
+      {/* Nav */}
+      <nav style={{ flex: 1, padding: '14px 10px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+        <div
           style={{
             fontFamily: 'var(--font-barlow-condensed)',
             fontSize: '9.5px',
             fontWeight: 700,
-            letterSpacing: '0.22em',
-            color: 'var(--tx-3)',
+            letterSpacing: '0.2em',
             textTransform: 'uppercase',
+            color: 'var(--sidebar-tx)',
+            padding: '4px 10px 8px',
+            opacity: 0.5,
           }}
         >
-          Módulos
-        </span>
-      </div>
+          Menu
+        </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-3 space-y-0.5">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname.startsWith(href);
           return (
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-lg relative transition-all duration-150"
               style={{
-                color: active ? 'var(--gold)' : 'var(--tx-2)',
-                background: active ? 'var(--gold-dim)' : 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '9px 10px',
+                borderRadius: '8px',
+                background: active ? 'var(--sidebar-active)' : 'transparent',
+                color: active ? 'var(--sidebar-tx-act)' : 'var(--sidebar-tx)',
                 fontFamily: 'var(--font-barlow-condensed)',
-                fontSize: '13px',
+                fontSize: '13.5px',
                 fontWeight: active ? 600 : 500,
                 letterSpacing: '0.02em',
+                textDecoration: 'none',
+                transition: 'background 0.15s, color 0.15s',
+                borderLeft: active ? '2px solid var(--blue)' : '2px solid transparent',
               }}
               onMouseEnter={(e) => {
                 if (!active) {
-                  (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(255,255,255,0.03)';
-                  (e.currentTarget as HTMLAnchorElement).style.color = '#8FACC8';
+                  (e.currentTarget as HTMLAnchorElement).style.background = 'var(--sidebar-hover)';
+                  (e.currentTarget as HTMLAnchorElement).style.color = '#FFFFFF';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!active) {
                   (e.currentTarget as HTMLAnchorElement).style.background = 'transparent';
-                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--tx-2)';
+                  (e.currentTarget as HTMLAnchorElement).style.color = 'var(--sidebar-tx)';
                 }
               }}
             >
-              {active && (
-                <span
-                  className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r-full"
-                  style={{
-                    width: '3px',
-                    height: '20px',
-                    background: 'var(--gold)',
-                    boxShadow: '0 0 8px var(--gold-glow)',
-                  }}
-                />
-              )}
-              <Icon size={14} strokeWidth={active ? 2 : 1.7} />
+              <Icon size={15} strokeWidth={active ? 2 : 1.7} style={{ flexShrink: 0 }} />
               {label}
             </Link>
           );
         })}
       </nav>
 
-      {/* User / logout */}
-      <div className="px-4 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="flex items-center gap-2.5 mb-3">
+      {/* User + logout */}
+      <div
+        style={{
+          borderTop: '1px solid var(--sidebar-border)',
+          padding: '14px',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
           <span
-            className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
             style={{
-              background: 'var(--gold-dim)',
-              border: '1px solid rgba(232,160,48,0.2)',
-              color: 'var(--gold)',
-              fontFamily: 'var(--font-barlow-condensed)',
-              letterSpacing: '0.05em',
+              width: '30px',
+              height: '30px',
+              borderRadius: '50%',
+              background: 'rgba(29,111,196,0.22)',
+              border: '1px solid rgba(29,111,196,0.35)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
             }}
           >
-            {initials}
+            <User size={13} style={{ color: 'var(--blue)' }} />
           </span>
-          <p
-            className="text-[11px] truncate leading-tight"
-            style={{ color: 'var(--tx-3)', fontFamily: 'var(--font-jetbrains)' }}
+          <span
+            style={{
+              fontFamily: 'var(--font-jetbrains)',
+              fontSize: '10.5px',
+              color: 'var(--sidebar-tx)',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              flex: 1,
+            }}
           >
             {userEmail}
-          </p>
+          </span>
         </div>
-        <LogoutButton />
+
+        <button
+          onClick={handleLogout}
+          style={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            padding: '7px 12px',
+            borderRadius: '7px',
+            background: 'rgba(255,255,255,0.05)',
+            border: '1px solid var(--sidebar-border)',
+            color: 'var(--sidebar-tx)',
+            fontFamily: 'var(--font-barlow-condensed)',
+            fontSize: '12px',
+            fontWeight: 500,
+            letterSpacing: '0.05em',
+            cursor: 'pointer',
+            transition: 'background 0.15s, color 0.15s, border-color 0.15s',
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = 'rgba(220,38,38,0.12)';
+            (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(220,38,38,0.3)';
+            (e.currentTarget as HTMLButtonElement).style.color = '#FC8181';
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)';
+            (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--sidebar-border)';
+            (e.currentTarget as HTMLButtonElement).style.color = 'var(--sidebar-tx)';
+          }}
+        >
+          <LogOut size={13} />
+          Sair do sistema
+        </button>
       </div>
     </aside>
   );

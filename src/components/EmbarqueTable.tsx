@@ -121,14 +121,14 @@ export default function EmbarqueTable({ embarques }: Props) {
           onClick={() => setShowNew(true)}
           className="px-4 py-2 rounded-lg transition-all duration-150 font-bold uppercase"
           style={{
-            background: 'var(--navy)',
+            background: 'var(--blue)',
             color: '#FFFFFF',
             fontFamily: 'var(--font-barlow-condensed)',
             fontSize: '12px',
             letterSpacing: '0.08em',
           }}
-          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = '#1a2e4a'; }}
-          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--navy)'; }}
+          onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--blue-dark)'; }}
+          onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--blue)'; }}
         >
           + Novo Embarque
         </button>

@@ -160,7 +160,7 @@ export default function EmbarqueModal({ onClose, onSuccess }: Props) {
               type="submit" disabled={loading}
               className="px-5 py-2 rounded-lg font-bold uppercase transition-all duration-150"
               style={{
-                background: loading ? 'rgba(10,22,40,0.6)' : 'var(--navy)',
+                background: loading ? 'rgba(29,111,196,0.55)' : 'var(--blue)',
                 color: '#FFFFFF',
                 fontFamily: 'var(--font-barlow-condensed)',
                 fontSize: '12.5px',

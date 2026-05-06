@@ -7,17 +7,36 @@
 }
 
 :root {
-  --bg:        #EEF0F4;
+  /* Content area */
+  --bg:        #EFF2F7;
   --surface:   #FFFFFF;
-  --surface-2: #F8F9FB;
-  --border:    rgba(0,0,0,0.07);
-  --border-2:  rgba(0,0,0,0.12);
+  --surface-2: #F5F7FA;
+  --border:    rgba(0,0,0,0.06);
+  --border-2:  rgba(0,0,0,0.10);
   --tx:        #0F172A;
   --tx-2:      #64748B;
   --tx-3:      #94A3B8;
+
+  /* Sidebar */
+  --sidebar:        #0F1C2E;
+  --sidebar-hover:  rgba(255,255,255,0.05);
+  --sidebar-active: rgba(29,111,196,0.18);
+  --sidebar-border: rgba(255,255,255,0.07);
+  --sidebar-tx:     #7FA8C9;
+  --sidebar-tx-act: #FFFFFF;
+
+  /* Brand / Primary */
+  --blue:      #1D6FC4;
+  --blue-dark: #1558A0;
+  --blue-dim:  rgba(29,111,196,0.08);
+  --blue-mid:  rgba(29,111,196,0.16);
+
+  /* Legacy compat (some table cells use --navy for data display) */
   --navy:      #0A1628;
   --navy-dim:  rgba(10,22,40,0.07);
   --navy-mid:  rgba(10,22,40,0.14);
+
+  /* Status */
   --sky:       #2563EB;
   --green:     #16A34A;
   --red:       #DC2626;
@@ -44,8 +63,8 @@ body {
   outline: none;
 }
 .inp:focus {
-  border-color: var(--navy);
-  box-shadow: 0 0 0 3px var(--navy-dim);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-dim);
 }
 .inp::placeholder { color: var(--tx-3); }
 .inp[type="date"]::-webkit-calendar-picker-indicator {
@@ -66,7 +85,7 @@ body {
   cursor: pointer;
   transition: border-color 0.15s;
 }
-.sel:focus   { border-color: var(--navy); }
+.sel:focus   { border-color: var(--blue); }
 .sel:disabled { opacity: 0.35; }
 .sel option  { background: #FFFFFF; color: var(--tx); }
 
