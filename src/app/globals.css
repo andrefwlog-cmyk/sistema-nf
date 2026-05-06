@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: var(--font-barlow), 'Barlow', sans-serif;
-  --font-display: var(--font-barlow-condensed), 'Barlow Condensed', sans-serif;
+  --font-sans: var(--font-inter), 'Inter', sans-serif;
+  --font-display: var(--font-poppins), 'Poppins', sans-serif;
   --font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
 }
 
@@ -46,7 +46,7 @@
 body {
   background: var(--bg);
   color: var(--tx);
-  font-family: var(--font-barlow), 'Barlow', sans-serif;
+  font-family: var(--font-inter), 'Inter', sans-serif;
 }
 
 /* ── Inputs ─────────────────────────────────────── */
@@ -58,7 +58,7 @@ body {
   padding: 9px 12px;
   font-size: 13.5px;
   color: var(--tx);
-  font-family: var(--font-barlow), 'Barlow', sans-serif;
+  font-family: var(--font-inter), 'Inter', sans-serif;
   transition: border-color 0.15s, box-shadow 0.15s;
   outline: none;
 }
@@ -80,7 +80,7 @@ body {
   padding: 5px 8px;
   font-size: 12px;
   color: var(--tx);
-  font-family: var(--font-barlow), 'Barlow', sans-serif;
+  font-family: var(--font-inter), 'Inter', sans-serif;
   outline: none;
   cursor: pointer;
   transition: border-color 0.15s;
